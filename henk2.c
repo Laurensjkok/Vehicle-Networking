@@ -1,6 +1,6 @@
 #include <stdio.h>
 //#include <can_driver_mac_types.h>
-#include <can_phy.h>
+//#include <can_phy.h>
 #define IdLength 11
 #define MaxDataLength 64
 #define POLYNOMIAL 0xC599  /* 11011 followed by 0's */
