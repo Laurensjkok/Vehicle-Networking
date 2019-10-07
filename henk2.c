@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <can_driver_mac_types.h>
 #include <can_phy.h>
 #define IdLength 11
