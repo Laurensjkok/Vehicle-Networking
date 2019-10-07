@@ -89,7 +89,7 @@ int RoundUp(double input)
 	return output;
 }
 
-void iddec2bin()
+void iddec2bin()//can we use one dec2bin function to call inside the code?
 {
 	int n = iddec;
 	int i = 0;
