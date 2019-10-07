@@ -46,29 +46,28 @@ void stuffing()
 
 void CRC()
 {	//Very inefficient CRC implementation! Can no doubt be improved
-	bool checkdata[79];
+	bool checkdata[79];//create duplicate data
 	int k;
 	for (int j = 0; j < 64; j++){
-		checkdata[j] = bindata[j];
+		checkdata[j] = bindata[j];//copy to duplicate
 	}
 	for (int i = 64; i < 79; i++){
-		checkdata[i] = 0;
+		checkdata[i] = 0;//fill with zeros--The amount is the same each time due to same check?
 		
 	}
-	while (k<64){
+	while (k<64){//do devision to create remainder
 		if (checkdata[k]==0){
 			k++;
 		}
 		else{
-			for (int l=0; l<16; l++)
-			{
-				checkdata[k+l] = checkdata[k+l] ^ polynomial[l];
+			for (int l=0; l<16; l++){
+				checkdata[k+l] = checkdata[k+l] ^ polynomial[l];//take XOR of checkdata and write replacement
 			}
 	
 		}
 	}
 	for (int m = 0; m<15; m++){
-		checksum[m] = checkdata[64+m];
+		checksum[m] = checkdata[64+m];//write remainder to checksum
 	}
 }
 	
