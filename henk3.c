@@ -2,7 +2,6 @@
 #include <can_phy.h>
 #define IdLength 11
 #define MaxDataLength 64
-
  
 bool frame[135];
 bool framestart[15];
