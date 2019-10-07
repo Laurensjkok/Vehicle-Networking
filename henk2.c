@@ -19,13 +19,13 @@ unsigned long data = 72057594037927935;
 
 void stuffing()
 {
-	int insertedbits = 0;
-	int c, ins;
+	int insertedbits = 0; //set counter to zero
+	int c, ins;//kak
 	int n = 122;
 	int val;
 	int i = 0;
 	while(i<122){
-		val = frame[i];
+		val = frame[i];// bit stuffing is only necessary for consequtive ones, not zeros
 		if ((val == frame[i+1]) && (val == frame[i+2]) && (val == frame[i+3]) && (val == frame[i+4])){
 		ins = 1 - frame[i];
 		insertedbits++;
