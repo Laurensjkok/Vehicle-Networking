@@ -199,7 +199,6 @@ void make_frame()
 int main()
 {
 	make_frame();
-//ackjemoeder
 	printf("\n");
 	for (int j = 0; j < (stuffedlength + 13); ++j)
 	{
