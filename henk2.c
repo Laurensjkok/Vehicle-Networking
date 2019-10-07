@@ -20,7 +20,7 @@ unsigned long data = 72057594037927935;
 void stuffing()
 {
 	int insertedbits = 0; //set counter to zero
-	int c, ins;
+	int c, ins;//kak
 	int n = 122;
 	int val;
 	int i = 0;
