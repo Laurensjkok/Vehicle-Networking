@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdbool.c>
+#include <stdbool.h>
 #define IdLength 11
 #define MaxDataLength 64
 #define POLYNOMIAL 0xC599  /* 11011 followed by 0's */
