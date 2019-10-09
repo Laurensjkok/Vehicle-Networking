@@ -261,6 +261,7 @@ bool send_frame(){
  
  void resetFrame(){
 	 memset(frame, 0, sizeof(frame));//set frame to zeros
+	 return;
  }
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
