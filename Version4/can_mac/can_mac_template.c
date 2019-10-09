@@ -26,7 +26,7 @@ int EndOfData;
 int numbytes;
 int stuffedlength;
 unsigned long data;
-//henk
+//henk henk
 
 void stuffing()
 {
