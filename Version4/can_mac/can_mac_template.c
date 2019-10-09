@@ -290,7 +290,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		resetFrame();//make frame all zeros
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
 		while(RxSymbol==0){
-			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
+			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		
 		for(i = 0;i<19;i++){//receive frame while unstuffing until DLC
@@ -303,7 +303,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 					stuffedBit = 0;
 				}
 			}
-			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
+			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 			
 			//luisterprogramma dat direct unstuffedtd
