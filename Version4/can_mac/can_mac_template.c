@@ -25,6 +25,7 @@ int iddec;
 int EndOfData;
 int numbytes;
 int stuffedlength;
+int DLCdec;
 unsigned long data;
 
 
@@ -262,6 +263,13 @@ bool send_frame(){
 void resetFrame(){
 	 memset(frame, 0, sizeof(frame));//set frame to zeros	
 }
+
+void DLCbin2dec(){
+	for(int i=15, i<19, i++){
+		DLCdec = frame[i]*2^(19-i);
+	}
+	framelenght = 19+DLCdec*8+15+13;
+}
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
@@ -295,7 +303,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		}
 		
 		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
-			if(stuffedBit<5){
+			if(stuffedBit<5){//unstuff while listening
 				frame[i] = RxSymbol;
 				if(frame[i]==frame[i-1]){
 					stuffedBit++;
@@ -306,6 +314,23 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			}
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
+		DLCbin2dec();
+		for(int i =19;i<framelenght;i++){
+			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
+			if(stuffedBit<5){//unstuff while listening
+				frame[i] = RxSymbol;
+				if(frame[i]==frame[i-1]){
+					stuffedBit++;
+				}
+				else{
+					stuffedBit = 0;
+				}
+			}
+			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+		}
+			
+		}
+		
 			
 			//luisterprogramma dat direct unstuffedtd
 			//listen for SOF
@@ -326,4 +351,4 @@ int EOFCounter, ErrorCounter, stuffedBit;
      
 }
 }
-}
+}/
