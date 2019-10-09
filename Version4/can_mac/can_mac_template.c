@@ -293,10 +293,10 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		
-		for(i = 0;i<19;i++){//receive frame while unstuffing until DLC
+		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 			if(stuffedBit<5){
 				frame[i] = RxSymbol;
-				if(frame[i]==frame[i-1]{
+				if(frame[i]==frame[i-1]){
 					stuffedBit++;
 				}
 				else{
