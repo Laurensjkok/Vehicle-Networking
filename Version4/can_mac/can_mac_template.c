@@ -273,24 +273,38 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 	}
 }
 else{// you are actuator
-
+int EOFCounter, ErrorCounter, stuffedBit;
 	while(1){ 
 		//restart listening
-		while(EOFCounter < 11){
+		while(EOFCounter < 11 && ErrorCounter < 7){//wait until 11 ressecive or 7 dominants (error code) have passed
 			
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
-			if(RxSymbol==1)EOFCounter++;
-			else EOFCounter = 0;			
+			if(RxSymbol==1){
+				EOFCounter++;
+				ErrorCounter = 0;
+			}//add to counter
+			else {
+				ErrorCounter++;
+				EOFCounter = 0;		
+		}
+		resetFrame();//make frame all zeros
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
+		while(RxSymbol==0){
+			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
 		}
 		
-
-		resetFrame();
-		
-		detectSOF();
-		
-
-    		//listen for 11 ressecive
-			detectSOF();
+		for(i = 0;i<19;i++){//receive frame while unstuffing until DLC
+			if(stuffedBit<5){
+				frame[i] = RxSymbol;
+				if(frame[i]==frame[i-1]{
+					stuffedBit++;
+				}
+				else{
+					stuffedBit = 0;
+				}
+			}
+			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
+		}
 			
 			//luisterprogramma dat direct unstuffedtd
 			//listen for SOF
