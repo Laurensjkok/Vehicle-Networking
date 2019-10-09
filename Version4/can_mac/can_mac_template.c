@@ -259,10 +259,9 @@ bool send_frame(){
  }
  
  
- void resetFrame(){
-	 memset(frame, 0, sizeof(frame));//set frame to zeros
-	 return;
- }
+ // void resetFrame(){
+	 // memset(frame, 0, sizeof(frame));//set frame to zeros	
+// }
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
@@ -288,8 +287,8 @@ int EOFCounter, ErrorCounter, stuffedBit;
 				ErrorCounter++;
 				EOFCounter = 0;		
 		}
-		resetFrame();//make frame all zeros
-		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
+//		resetFrame();//make frame all zeros
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		while(RxSymbol==0){
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
