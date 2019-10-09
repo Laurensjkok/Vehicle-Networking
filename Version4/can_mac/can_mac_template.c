@@ -60,11 +60,11 @@ void CRC()
 {	//Very inefficient CRC implementation! Can no doubt be improved
 	bool checkdata[79];
 	int k;
-	for (int j = 0; j < 64; j++){
-		checkdata[j] = bindata[j];
+	for (int j = 0; j < 64; j++){//replace 64 with datalength
+		checkdata[j] = bindata[j];// create copy int
 	}
 	for (int i = 64; i < 79; i++){
-		checkdata[i] = 0;
+		checkdata[i] = 0;//add zeros
 		
 	}
 	while (k<64){
@@ -276,6 +276,20 @@ bool send_frame(){
       }
       else{
  //      can_mac_tx_next_frame(RxFrameForActuator, &RxFrame);
+			//listen for 11 ressecive
+			//luisterprogramma dat direct unstuffedtd
+			//listen for SOF
+			//receive frame until DLC
+			//Determine framelength and process
+			//receive frame until ACK
+			//Compare CRC to calculated CRC (check checksum)
+			//if CRC != 0
+				//discard data and 			
+			//else
+			//send ack
+			//send data to actuator?
+			//try again
+
     
     /* to send a CAN symbol on the CAN bus use:
        can_phy_tx_symbol(can_port_id, TxSymbol)
