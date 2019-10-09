@@ -14,7 +14,7 @@ static void hw_can_mac_driver(
   bool newFrameFromSensor;
   CAN_SYMBOL TxSymbol, RxSymbol;
   
-  bool frame[135];
+bool frame[135];
 bool framestart[15];
 bool bindata[MaxDataLength];
 bool idbin[IdLength];
@@ -26,8 +26,7 @@ int EndOfData;
 int numbytes;
 int stuffedlength;
 unsigned long data;
-//henk
-//henk2
+
 
 void stuffing()
 {
@@ -258,6 +257,11 @@ bool send_frame(){
    }
  
  }
+ 
+ 
+ void resetFrame(){
+	 memset(frame, 0, sizeof(frame));//set frame to zeros
+ }
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
@@ -268,9 +272,39 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 		}
 	}
 }
-else{
+else{// you are actuator
+
 	while(1){ 
-    
+		//restart listening
+		while(EOFCounter < 11){
+			
+			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
+			if(RxSymbol==1)EOFCounter++;
+			else EOFCounter = 0;			
+		}
+		
+
+		resetFrame();
+		
+		detectSOF();
+		
+
+    		//listen for 11 ressecive
+			detectSOF();
+			
+			//luisterprogramma dat direct unstuffedtd
+			//listen for SOF
+			//receive frame until DLC
+			//Determine framelength and process
+			//receive frame until ACK
+			//Compare CRC to calculated CRC (check checksum)
+			//if CRC != 0
+				//discard data and 			
+			//else
+			//send ack
+			//send data to actuator?
+			//try again
+
 
    
  }
