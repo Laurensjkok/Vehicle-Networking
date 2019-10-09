@@ -259,49 +259,20 @@ bool send_frame(){
  
  }
   
- while (1) {
-      if ((*rxPrioFilters) < 0){ //then we're master else slave
-      // as a master, to get the next frame to send from the sensor use:
-  //      long henk;
-         newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
-  //       henk = TxFrame.Data;
-  //       mk_mon_debug_info(henk);
-         if (newFrameFromSensor == 1){
-         make_frame();
-         queue_sending(1000);
-
-       
-         }
-      // as a slave, to send a received frame with priority rxPrioFilter to the actuator use:
-      }
-      else{
- //      can_mac_tx_next_frame(RxFrameForActuator, &RxFrame);
-			//listen for 11 ressecive
-			//luisterprogramma dat direct unstuffedtd
-			//listen for SOF
-			//receive frame until DLC
-			//Determine framelength and process
-			//receive frame until ACK
-			//Compare CRC to calculated CRC (check checksum)
-			//if CRC != 0
-				//discard data and 			
-			//else
-			//send ack
-			//send data to actuator?
-			//try again
-
+if ((*rxPrioFilters) < 0){ //then we're master else slave
+	while(1){
+		newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
+        if (newFrameFromSensor == 1){
+			make_frame();
+			queue_sending(1000);
+		}
+	}
+}
+else{
+	while(1){ 
     
-    /* to send a CAN symbol on the CAN bus use:
-       can_phy_tx_symbol(can_port_id, TxSymbol)
-       to receive a CAN symbol from the CAN bus use:
-       can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
-       this function blocks until a new symbol is available on the bus
-    */
-    }
+
    
-    
-
-   }
  }
      
  
