@@ -265,7 +265,7 @@ void resetFrame(){
 }
 
 void DLCbin2dec(){
-	for(int i=15, i<19, i++){
+	for(int i=15; i<19; i++){
 		DLCdec = frame[i]*2^(19-i);
 	}
 	int lenghtToAck = 19+DLCdec*8+16;
