@@ -269,6 +269,7 @@ void DLCbin2dec(){
 		DLCdec = frame[i]*2^(19-i);
 	}
 	int lenghtToAck = 19+DLCdec*8+16;
+	return lenghtToAck
 }
 
 void sendACK(){
@@ -323,7 +324,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			}
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
-		DLCbin2dec();//calculate dataLength
+		int lenghtToAck = DLCbin2dec();//calculate dataLength
 		for(int i =19;i<lenghtToAck;i++){
 			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 				if(stuffedBit<5){//unstuff while listening
@@ -344,7 +345,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		}
 		CRC();//determine CRC from data
 		for(int i = (lenghtToAck-16);i<lenghtToAck;i++){
-			if(frame[i]!=checkframe[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
+			if(frame[i]!=checksum[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
 				error=1;
 				resetFrame();
 				goto errorRetry;//go to the start of the actuator while loop to listen for 7 dominants
