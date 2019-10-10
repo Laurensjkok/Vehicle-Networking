@@ -272,7 +272,7 @@ int DLCbin2dec(){
 	return lenghtToAck;
 }
 
-void sendACK(){
+void sendAck(){
 	can_phy_tx_symbol(can_port_id, DOMINANT);
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 	can_phy_tx_symbol(can_port_id, RECESSIVE);
