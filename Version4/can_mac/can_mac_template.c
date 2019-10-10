@@ -292,6 +292,7 @@ else{// you are actuator
 int EOFCounter, ErrorCounter, stuffedBit;
 	while(1){ 
 		//restart listening
+		errorRetry:
 		while(EOFCounter < 11 && ErrorCounter < 7){//wait until 11 ressecive or 7 dominants (error code) have passed
 			
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
@@ -300,12 +301,13 @@ int EOFCounter, ErrorCounter, stuffedBit;
 				ErrorCounter = 0;
 			}//add to counter
 			else {
-				ErrorCounter++;
+				ErrorCounter++;//HOW TO MAKE SURE IT KEEPS LISTENING FOR 7 DOMINANTS?
 				EOFCounter = 0;		
+			}
 		}
 		resetFrame();//make frame all zeros
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-		while(RxSymbol==0){
+		while(RxSymbol==0){//wait for SOF
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		
@@ -321,7 +323,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			}
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
-		DLCbin2dec();
+		DLCbin2dec();//calculate dataLength
 		for(int i =19;i<lenghtToAck;i++){
 			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 				if(stuffedBit<5){//unstuff while listening
@@ -337,36 +339,25 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			}
 			
 		}
-		for(int i = 19; i<(lenghtToAck-16); i++){
+		for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
 			bindata[i] = frame[i];
 		}
-		CRC();
+		CRC();//determine CRC from data
 		for(int i = (lenghtToAck-16);i<lenghtToAck;i++){
 			if(frame[i]!=checkframe[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
 				error=1;
-				break;
+				resetFrame();
+				goto errorRetry;//go to the start of the actuator while loop to listen for 7 dominants
 			}
 		}
-		sendAck();
-		
-		
-			//luisterprogramma dat direct unstuffedtd
-			//listen for SOF
-			//receive frame until DLC
-			//Determine framelength and process
-			//receive frame until ACK
-			//Compare CRC to calculated CRC (check checksum)
-			//if CRC != 0
-				//discard data and 			
-			//else
-			//send ack
+		//if this point is reached, the data is correct
+		sendAck();//send Acknowledgement on bus
+		//send data to actuator
 			//send data to actuator?
-			//try again
+			//try again?
 
 
    
- }
-     
-}
-}
-}/
+	}//end of actuator while loop
+}//end of actuator part
+}//end of static void hw_mac_driver
