@@ -269,7 +269,7 @@ void DLCbin2dec(){
 		DLCdec = frame[i]*2^(19-i);
 	}
 	int lenghtToAck = 19+DLCdec*8+16;
-	return lenghtToAck
+	return lenghtToAck;
 }
 
 void sendACK(){
@@ -346,7 +346,6 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		CRC();//determine CRC from data
 		for(int i = (lenghtToAck-16);i<lenghtToAck;i++){
 			if(frame[i]!=checksum[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
-				error=1;
 				resetFrame();
 				goto errorRetry;//go to the start of the actuator while loop to listen for 7 dominants
 			}
