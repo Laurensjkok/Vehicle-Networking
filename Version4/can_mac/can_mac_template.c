@@ -268,7 +268,7 @@ void DLCbin2dec(){
 	for(int i=15, i<19, i++){
 		DLCdec = frame[i]*2^(19-i);
 	}
-	framelenght = 19+DLCdec*8+15+13;
+	int lenghtToAck = 19+DLCdec*8+16;
 }
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
@@ -315,7 +315,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		DLCbin2dec();
-		for(int i =19;i<framelenght;i++){
+		for(int i =19;i<lenghtToAck;i++){
 			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 			if(stuffedBit<5){//unstuff while listening
 				frame[i] = RxSymbol;
