@@ -264,7 +264,7 @@ void resetFrame(){
 	 memset(frame, 0, sizeof(frame));//set frame to zeros	
 }
 
-void DLCbin2dec(){
+int DLCbin2dec(){
 	for(int i=15; i<19; i++){
 		DLCdec = frame[i]*2^(19-i);
 	}
