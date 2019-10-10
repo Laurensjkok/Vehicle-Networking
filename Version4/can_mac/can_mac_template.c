@@ -270,6 +270,13 @@ void DLCbin2dec(){
 	}
 	int lenghtToAck = 19+DLCdec*8+16;
 }
+
+void sendACK(){
+	can_phy_tx_symbol(can_port_id, DOMINANT);
+	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+	can_phy_tx_symbol(can_port_id, RECESSIVE);
+	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	   
+}
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
@@ -317,21 +324,32 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		DLCbin2dec();
 		for(int i =19;i<lenghtToAck;i++){
 			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
-			if(stuffedBit<5){//unstuff while listening
-				frame[i] = RxSymbol;
-				if(frame[i]==frame[i-1]){
-					stuffedBit++;
+				if(stuffedBit<5){//unstuff while listening
+					frame[i] = RxSymbol;
+					if(frame[i]==frame[i-1]){
+						stuffedBit++;
+					}
+					else{
+						stuffedBit = 0;
+					}
 				}
-				else{
-					stuffedBit = 0;
-				}
+				can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 			}
-			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-		}
 			
 		}
+		for(int i = 19; i<(lenghtToAck-16); i++){
+			bindata[i] = frame[i];
+		}
+		CRC();
+		for(int i = (lenghtToAck-16);i<lenghtToAck;i++){
+			if(frame[i]!=checkframe[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
+				error=1;
+				break;
+			}
+		}
+		sendAck();
 		
-			
+		
 			//luisterprogramma dat direct unstuffedtd
 			//listen for SOF
 			//receive frame until DLC
