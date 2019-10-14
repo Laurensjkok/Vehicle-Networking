@@ -29,6 +29,22 @@ int DLCdec;
 unsigned long data;
 
 
+int pow(int base, int exp){
+	if(exp < 0)
+	return -1;
+
+	int result = 1;
+	while (exp)
+	{
+		if (exp & 1)
+			result *= base;
+		exp >>= 1;
+		base *= base;
+	}
+
+	return result;
+}
+
 void stuffing()
 {
 	int insertedbits = 0;
@@ -266,8 +282,12 @@ void resetFrame(){
 
 int DLCbin2dec(){
 	DLCdec = 0;
+	int N = 1;
 	for(int i=18; i>14; i--){
-		DLCdec = DLCdec + frame[i]*2^(i-15);
+		if(frame[i]==1){
+		DLCdec = DLCdec + N;
+		N = 2*N;
+		}
 	}
 	int lenghtToAck = 19+DLCdec*8+16;
 	return lenghtToAck;
@@ -340,7 +360,7 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 		mk_mon_debug_info(0x5);
 		//WORKING FOR SURE UNTIL HERE
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
-		mk_mon_debug_info(DLCdec);
+		mk_mon_debug_info(lenghtToAck);
 		for(int i =19;i<lenghtToAck;i++){
 			if(stuffedBit<5){//unstuff while listening
 				frame[i] = RxSymbol;
