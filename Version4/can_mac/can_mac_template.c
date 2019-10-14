@@ -193,6 +193,7 @@ void make_frame()
 
 //	numbytes = datadec2bin();
   numbytes = TxFrame.DLC;
+  mk_mon_debug_info(numbytes);
 	DLCdec2bin(numbytes);
 //	printf("%d", numbytes);
 	CRC();
