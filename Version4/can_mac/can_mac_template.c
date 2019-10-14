@@ -292,7 +292,7 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 }
 
 else{// you are actuator
-mk_mon_debug_info(0xZ);
+mk_mon_debug_info(0x1234);
 int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 	while(1){ 
 		//restart listening
