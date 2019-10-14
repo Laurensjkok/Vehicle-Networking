@@ -285,11 +285,11 @@ int DLCbin2dec(){
 	DLCdec = 0;
 	int N = 1;
 	for(int i=18; i>14; i--){
-		if(frame[i]==1){
+		if(frame[i]==0){
 		DLCdec = DLCdec + N;
 		N = 2*N;
 		}
-		mk_mon_debug_info(frame[i]);
+		mk_mon_debug_info(DLCdec);
 	}
 	int lenghtToAck = 19+(DLCdec*8)+16;
 	return lenghtToAck;
