@@ -301,6 +301,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		while(EOFCounter < 11 && ErrorCounter < 7){//wait until 11 ressecive or 7 dominants (error code) have passed
 			
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
+			mk_mon_debug_info(RxSymbol);
 			if(RxSymbol==1){
 				EOFCounter++;
 				ErrorCounter = 0;
@@ -313,8 +314,10 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		mk_mon_debug_info(0x3);
 		resetFrame();//make frame all zeros
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+		mk_mon_debug_info(RxSymbol);
 		while(RxSymbol==1){//wait for SOF
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+			mk_mon_debug_info(RxSymbol);
 		}
 		mk_mon_debug_info(0x4);
 		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
@@ -328,6 +331,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 				}
 			}
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+			mk_mon_debug_info(RxSymbol);
 		}
 		mk_mon_debug_info(0x5);
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
@@ -344,6 +348,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 					}
 				}
 				can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+				mk_mon_debug_info(RxSymbol);
 			}
 			
 		}
