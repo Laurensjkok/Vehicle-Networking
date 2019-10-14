@@ -315,13 +315,13 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 		resetFrame();//make frame all zeros
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		mk_mon_debug_info(RxSymbol);
-		while(RxSymbol==1){//wait for SOF
+		while(RxSymbol==1){//wait for SOF (i==1)
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 			mk_mon_debug_info(2222);
 		}
 		mk_mon_debug_info(0x4);
-				//WORKING FOR SURE UNTIL HERE
-		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
+
+		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 			if(stuffedBit<5){//unstuff while listening
 				frame[i] = RxSymbol;
 				if(frame[i]==frame[i-1]){
@@ -336,6 +336,7 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		mk_mon_debug_info(0x5);
+		//WORKING FOR SURE UNTIL HERE
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
 		mk_mon_debug_info(lenghtToAck);
 		for(int i =19;i<lenghtToAck;i++){
