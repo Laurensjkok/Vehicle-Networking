@@ -331,7 +331,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		}
 		mk_mon_debug_info(0x5);
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
-		mk_mon_debug_info(0xdataLength);
+		mk_mon_debug_info(dataLength);
 		for(int i =19;i<lenghtToAck;i++){
 			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 				if(stuffedBit<5){//unstuff while listening
