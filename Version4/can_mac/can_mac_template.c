@@ -317,9 +317,10 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 		mk_mon_debug_info(RxSymbol);
 		while(RxSymbol==1){//wait for SOF
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-			mk_mon_debug_info(RxSymbol);
+			mk_mon_debug_info(2222);
 		}
 		mk_mon_debug_info(0x4);
+				//WORKING FOR SURE UNTIL HERE
 		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 			if(stuffedBit<5){//unstuff while listening
 				frame[i] = RxSymbol;
@@ -331,6 +332,7 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 					stuffedBit = 0;
 				}
 			}
+			else stuffedBit = 0;
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		mk_mon_debug_info(0x5);
@@ -348,6 +350,7 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 						stuffedBit = 0;
 					}
 				}
+				else stuffedBit = 0;
 				can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 			}
 			
