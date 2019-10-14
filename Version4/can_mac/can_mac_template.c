@@ -299,16 +299,16 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 		mk_mon_debug_info(0x2);
 		errorRetry:
 		while(EOFCounter < 11 && ErrorCounter < 7){//wait until 11 ressecive or 7 dominants (error code) have passed
-			
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
-			mk_mon_debug_info(RxSymbol);
 			if(RxSymbol==1){
 				EOFCounter++;
+				mk_mon_debug_info(EOFCounter);
 				ErrorCounter = 0;
 			}//add to counter
 			else {
 				ErrorCounter++;//HOW TO MAKE SURE IT KEEPS LISTENING FOR 7 DOMINANTS?
-				EOFCounter = 0;		
+				EOFCounter = 0;
+				mk_mon_debug_info(ErrorCounter);				
 			}
 		}
 		mk_mon_debug_info(0x3);
@@ -325,13 +325,13 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 				frame[i] = RxSymbol;
 				if(frame[i]==frame[i-1]){
 					stuffedBit++;
+					mk_mon_debug_info(stuffedBit);					
 				}
 				else{
 					stuffedBit = 0;
 				}
 			}
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-			mk_mon_debug_info(RxSymbol);
 		}
 		mk_mon_debug_info(0x5);
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
@@ -342,13 +342,13 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 					frame[i] = RxSymbol;
 					if(frame[i]==frame[i-1]){
 						stuffedBit++;
+						mk_mon_debug_info(stuffedBit);							
 					}
 					else{
 						stuffedBit = 0;
 					}
 				}
 				can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-				mk_mon_debug_info(RxSymbol);
 			}
 			
 		}
