@@ -288,8 +288,9 @@ int DLCbin2dec(){
 		DLCdec = DLCdec + N;
 		N = 2*N;
 		}
+		mk_mon_debug_info(DLCdec);
 	}
-	int lenghtToAck = 19+DLCdec*8+16;
+	int lenghtToAck = 19+(DLCdec*8)+16;
 	return lenghtToAck;
 }
 
