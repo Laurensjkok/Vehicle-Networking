@@ -347,6 +347,7 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 			if(stuffedBit<5){//unstuff while listening
 				frame[i] = RxSymbol;
+				mk_mon_debug_info(frame[i]);					
 				if(frame[i]==frame[i-1]){
 					stuffedBit++;
 					mk_mon_debug_info(stuffedBit);					
