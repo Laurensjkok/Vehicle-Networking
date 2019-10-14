@@ -336,26 +336,24 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 			else stuffedBit = 0;
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
+		stuffedBit = 0;
 		mk_mon_debug_info(0x5);
 		//WORKING FOR SURE UNTIL HERE
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
 		mk_mon_debug_info(DLCdec);
 		for(int i =19;i<lenghtToAck;i++){
-			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
-				if(stuffedBit<5){//unstuff while listening
-					frame[i] = RxSymbol;
-					if(frame[i]==frame[i-1]){
-						stuffedBit++;
-						mk_mon_debug_info(stuffedBit);							
-					}
-					else{
-						stuffedBit = 0;
-					}
+			if(stuffedBit<5){//unstuff while listening
+				frame[i] = RxSymbol;
+				if(frame[i]==frame[i-1]){
+					stuffedBit++;
+					mk_mon_debug_info(stuffedBit);							
 				}
-				else stuffedBit = 0;
-				can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+				else{
+					stuffedBit = 0;
+				}
 			}
-			
+			else stuffedBit = 0;
+			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
 		}
 		mk_mon_debug_info(0x7);//received frame till ack
 		for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
