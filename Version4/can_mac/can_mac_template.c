@@ -292,11 +292,11 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 }
 
 else{// you are actuator
-mk_mon_debug_info("amActuator");
+mk_mon_debug_info(0xamActuator);
 int EOFCounter, ErrorCounter, stuffedBit;
 	while(1){ 
 		//restart listening
-		mk_mon_debug_info("restartListening");
+		mk_mon_debug_info(0xrestartListening);
 		errorRetry:
 		while(EOFCounter < 11 && ErrorCounter < 7){//wait until 11 ressecive or 7 dominants (error code) have passed
 			
@@ -310,13 +310,13 @@ int EOFCounter, ErrorCounter, stuffedBit;
 				EOFCounter = 0;		
 			}
 		}
-		mk_mon_debug_info("detectedNewFrame");
+		mk_mon_debug_info(0xdetectedNewFrame);
 		resetFrame();//make frame all zeros
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		while(RxSymbol==0){//wait for SOF
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
-		mk_mon_debug_info("detectedSOF");
+		mk_mon_debug_info(0xdetectedSOF);
 		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 			if(stuffedBit<5){//unstuff while listening
 				frame[i] = RxSymbol;
@@ -329,9 +329,9 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			}
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
-		mk_mon_debug_info("receivedFrameUntilDLC");
+		mk_mon_debug_info(0xreceivedFrameUntilDLC);
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
-		mk_mon_debug_info("calculatedFramelength");
+		mk_mon_debug_info(0xcalculatedFramelength);
 		for(int i =19;i<lenghtToAck;i++){
 			for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC
 				if(stuffedBit<5){//unstuff while listening
@@ -347,7 +347,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 			}
 			
 		}
-		mk_mon_debug_info("receivedFrameUntilAck");
+		mk_mon_debug_info(0xreceivedFrameUntilAck);
 		for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
 			bindata[i] = frame[i];
 		}
@@ -355,14 +355,14 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		for(int i = (lenghtToAck-16);i<lenghtToAck;i++){
 			if(frame[i]!=checksum[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
 				resetFrame();
-				mk_mon_debug_info("DATAINCORRECT");
+				mk_mon_debug_info(0xDATAINCORRECT);
 				goto errorRetry;//go to the start of the actuator while loop to listen for 7 dominants
 			}
 		}
-		mk_mon_debug_info("CRC_Correct");
-		//if this point is reached, thze data is correct
+		mk_mon_debug_info(0xCRCCorrect);
+		//if this point is reached, the data is correct
 		sendAck();//send Acknowledgement on bus
-		mk_mon_debug_info("sentAck");
+		mk_mon_debug_info(0xsentAck);
 		//send data to actuator
 			//send data to actuator?
 			//try again?
