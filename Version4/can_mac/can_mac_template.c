@@ -313,7 +313,7 @@ int EOFCounter, ErrorCounter, stuffedBit;
 		mk_mon_debug_info(0x3);
 		resetFrame();//make frame all zeros
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-		while(RxSymbol==0){//wait for SOF
+		while(RxSymbol==1){//wait for SOF
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		mk_mon_debug_info(0x4);
