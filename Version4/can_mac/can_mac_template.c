@@ -49,8 +49,6 @@ void stuffing()
 			frame[i+5] = ins;
 			
 		}
-		mk_mon_debug_info(insertedbits);
-		mk_mon_debug_info(val);
 		if (i >= (insertedbits + EndOfData + 10)){ //up to including CRC is exposed to bit stuffing. Anything beyond this point can no longer be stuffed.
 			break;
 		}
@@ -226,7 +224,6 @@ int send_frame(){
        break;
      }
 	 if (j == (stuffedlength + 1) && RxSymbol == 1){
-		 mk_mon_debug_info(0x1111);
 		 for(int k = 0; k<11;k++){
 			 can_phy_tx_symbol(can_port_id, RECESSIVE);
 			 can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
