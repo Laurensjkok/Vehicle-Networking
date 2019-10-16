@@ -304,7 +304,48 @@ void sendAck(){
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	   
 }
 
+void detectEOF(){
+	int EOFCounter = 0;
+	while(EOFCounter < 11){//wait until 11 ressecive or 7 dominants (error code) have passed
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
+		if(RxSymbol==1){
+			EOFCounter++;
+//				mk_mon_debug_info(EOFCounter);
+		}//add to counter
+		else {
+			EOFCounter = 0;
+//				mk_mon_debug_info(EOFCounter);				
+		}
+	}	
+}
 
+void detectSOF{
+	while(RxSymbol==1){//wait for SOF (i==1)
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+//		mk_mon_debug_info(2222);
+	}	
+}
+
+void receiveUntilDLC(){
+	int stuffedBit = 0;
+	for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
+		if(stuffedBit<5){//unstuff while listening
+			frame[i] = RxSymbol;
+			mk_mon_debug_info(frame[i]);					
+			if(frame[i]==frame[i-1]){
+				stuffedBit++;
+				mk_mon_debug_info(stuffedBit);					
+			}
+			else{
+				stuffedBit = 0;
+			}
+		}
+		else {
+			stuffedBit = 0;
+		}
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+	}	
+}
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
@@ -318,50 +359,18 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 
 else{// you are actuator
 mk_mon_debug_info(0x1234);
-int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 	while(1){ 
 		//restart listening
-		mk_mon_debug_info(0x2);
+//		mk_mon_debug_info(0x2);
 		errorRetry:
-		while(EOFCounter < 11){//wait until 11 ressecive or 7 dominants (error code) have passed
-			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
-			if(RxSymbol==1){
-				EOFCounter++;
-//				mk_mon_debug_info(EOFCounter);
-			}//add to counter
-			else {
-				EOFCounter = 0;
-//				mk_mon_debug_info(EOFCounter);				
-			}
-		}
-		mk_mon_debug_info(0x3);
+		detectEOF();
+//		mk_mon_debug_info(0x3);
 		resetFrame();//make frame all zeros
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-		mk_mon_debug_info(RxSymbol);
-		while(RxSymbol==1){//wait for SOF (i==1)
-			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-			mk_mon_debug_info(2222);
-		}
-		mk_mon_debug_info(0x4);
-
-		for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
-			if(stuffedBit<5){//unstuff while listening
-				frame[i] = RxSymbol;
-				mk_mon_debug_info(frame[i]);					
-				if(frame[i]==frame[i-1]){
-					stuffedBit++;
-					mk_mon_debug_info(stuffedBit);					
-				}
-				else{
-					stuffedBit = 0;
-				}
-			}
-			else {
-				stuffedBit = 0;
-			}
-			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-		}
-		stuffedBit = 0;
+//		mk_mon_debug_info(RxSymbol);
+		detectSOF();
+//		mk_mon_debug_info(0x4);
+		receiveUntilDLC();
 		mk_mon_debug_info(0x5);
 		//WORKING FOR SURE UNTIL HERE
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
