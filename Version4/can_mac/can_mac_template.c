@@ -323,11 +323,11 @@ void receiveUntilDLC(){
 //				mk_mon_debug_info(stuffedBit);					
 			}
 			else{
-				stuffedBit = 0;
+				stuffedBit = 1;
 			}
 		}
 		else {
-			stuffedBit = 0;
+			stuffedBit = 1;
 			i--;
 			mk_mon_debug_info(0x6666);			
 		}
@@ -345,11 +345,11 @@ void receiveUntilAck(int lenghtToAck){
 //				mk_mon_debug_info(stuffedBit);							
 			}
 			else{
-				stuffedBit = 0;
+				stuffedBit = 1;
 			}
 		}
 		else {
-			stuffedBit = 0;
+			stuffedBit = 1;
 			i--;
 			mk_mon_debug_info(0x6666);					
 		}
