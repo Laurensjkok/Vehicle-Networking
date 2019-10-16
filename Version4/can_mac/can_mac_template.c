@@ -56,7 +56,8 @@ void stuffing()
 	
 }
 
- void CRC(int length)
+
+void CRC(int length) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
  {	
 	 int k = 0;
 	 bool checkdata[83];
@@ -66,18 +67,14 @@ void stuffing()
 	 for (int i = length; i < (length+15); i++){
 		 checkdata[i] = 0;		 
 	 }
-
-
   	 while (k<length){
-
 		 if (checkdata[k]==0){
-			k++;
-			 
+
+			k++;			 
 		 }
  		 else{
 			 for (int z=0; z<16; z++)
-			 {	
-
+			 {
 				 checkdata[k+z] = checkdata[k+z] ^ polynomial[z];
 			 }
 		 } 
@@ -311,11 +308,13 @@ void detectSOF(){
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 //		mk_mon_debug_info(2222);
 	}
+	frame[0] = RxSymbol;
 	
 }
 
 void receiveUntilDLC(){
-	for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
+	for(int i = 1;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;					
 			if(frame[i]==frame[i-1]){
@@ -331,7 +330,7 @@ void receiveUntilDLC(){
 			i--;
 			mk_mon_debug_info(0x6666);			
 		}
-		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+		
 	}	
 }
 
@@ -400,6 +399,9 @@ else{// you are actuator
 		mk_mon_debug_info(endOfData);			
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
+		for (int i=0;i<lenghtToAck;i++){
+			mk_mon_debug_info(frame[i]);	
+		}
 //		mk_mon_debug_info(0x7);//received frame till ack
 		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
 			// bindata[i] = frame[i];
