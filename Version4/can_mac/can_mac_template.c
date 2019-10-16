@@ -360,7 +360,7 @@ bool checkCRC(int lenghtToAck){
 	for(int k=0; k<15;k++){
 		mk_mon_debug_info(checksum[k]);
 	}
-	k_mon_debug_info(0xAAAAAAA);
+	mk_mon_debug_info(0xAAAAAAA);
 	for(int k=0; k<lenghtToAck;k++){
 		mk_mon_debug_info(frame[k]);
 	}
