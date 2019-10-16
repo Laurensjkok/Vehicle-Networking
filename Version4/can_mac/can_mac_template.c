@@ -320,7 +320,7 @@ void detectEOF(){
 	}	
 }
 
-void detectSOF{
+void detectSOF(){
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
 	while(RxSymbol==1){//wait for SOF (i==1)
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
