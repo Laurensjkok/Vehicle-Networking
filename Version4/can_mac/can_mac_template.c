@@ -367,13 +367,14 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 }
 
 else{// you are actuator
-mk_mon_debug_info(0x1234);
+
 	while(1){ 
 		//restart listening
 //		mk_mon_debug_info(0x2);
 		stuffedBit = 0;
 		errorRetry:
 		detectEOF();
+		mk_mon_debug_info(0x1234);
 //		mk_mon_debug_info(0x3);
 		resetFrame();//make frame all zeros
 //		mk_mon_debug_info(RxSymbol);
