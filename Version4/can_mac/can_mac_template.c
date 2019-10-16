@@ -25,9 +25,8 @@ int iddec;
 int EndOfData;
 int numbytes;
 int stuffedlength;
-unsigned long data;
-//henk
-//henk2
+unsigned long long data;
+
 
 void stuffing()
 {
@@ -52,22 +51,21 @@ void stuffing()
 		i++;
 	}
 	stuffedlength = EndOfData + 15 + insertedbits; //Indicates index of CRC delimiter bit
-
 	
 }
 
-void CRC()
+void CRC(int Data_end)
 {	//Very inefficient CRC implementation! Can no doubt be improved
-	bool checkdata[79];
+	bool checkdata[98];
 	int k;
-	for (int j = 0; j < 64; j++){
-		checkdata[j] = bindata[j];
+	for (int j = 0; j < Data_end; j++){
+		checkdata[j] = frame[j];
 	}
-	for (int i = 64; i < 79; i++){
+	for (int i = (Data_end + 1); i < (Data_end + 1 + 15); i++){
 		checkdata[i] = 0;
 		
 	}
-	while (k<64){
+	while (k<(Data_end + 1)){
 		if (checkdata[k]==0){
 			k++;
 		}
@@ -80,11 +78,12 @@ void CRC()
 		}
 	}
 	for (int m = 0; m<15; m++){
-		checksum[m] = checkdata[64+m];
+		checksum[m] = checkdata[(Data_end + 1)+m];
 	}
 }
 	
 
+/*
 int RoundUp(double input)
 {
 	int whole;
@@ -99,7 +98,7 @@ int RoundUp(double input)
 		output = whole + 1;
 	}
 	return output;
-}
+}*/
 
 void iddec2bin()
 {
@@ -125,9 +124,12 @@ void DLCdec2bin(int n)
 }
 
 
-int datadec2bin()
+void datadec2bin()
 {
-	unsigned long n = data;
+data = TxFrame.Data;
+	unsigned long long n = data;
+ 
+ mk_mon_debug_info(n);
 	int i = 0;
 	int k = 0;
 	int LengthOfDataField = 0;
@@ -137,9 +139,10 @@ int datadec2bin()
 		bindata[MaxDataLength-i -1 ] = n % 2;
 		n = n/2;
 		i++;
+     
 	}
-	i = 0;
-	while (k == 0)
+//	i = 0;
+/*	while (k == 0)
 	{
 		if (i == 63 && bindata[i] == 0){
 			LengthOfDataField = 0;
@@ -153,7 +156,7 @@ int datadec2bin()
 	}
 	
 	dnumbytes = (double)LengthOfDataField / 8;
-	LengthOfDataField = RoundUp(dnumbytes);
+	LengthOfDataField = RoundUp(dnumbytes); */
 //	int BitsOfDataField = LengthOfDataField * 8;
 //	bool DataOut[BitsOfDataField];
 //	for (i = 0; i < LengthOfDataField; ++i)
@@ -165,21 +168,19 @@ int datadec2bin()
 //	inumbytes = dnumbytes2;
 //	printf("%d \n", inumbytes);
 //	printf("%d \n", LengthOfDataField);
-	return LengthOfDataField;
+//	return LengthOfDataField;
 	
 }
 
 void make_frame()
 {
-  data = TxFrame.Data;
 	iddec = TxFrame.ID;
 	iddec2bin();
+	datadec2bin();
+  DLCdec2bin(TxFrame.DLC);
 
-//	numbytes = datadec2bin();
   numbytes = TxFrame.DLC;
-	DLCdec2bin(numbytes);
-//	printf("%d", numbytes);
-	CRC();
+
 	
 	EndOfData = (19+(8*numbytes)); // Not really end of data. Indicates first bit of CRC field
 	frame[0] = 0;
@@ -194,11 +195,14 @@ void make_frame()
 	for (int i = 15; i < 19; ++i)
 	{
 		frame[i] = DLCbin[i-15];
+   mk_mon_debug_info(frame[i]);
 	}
 	for (int i = 19; i < EndOfData; ++i)
 	{
 		frame[i] = bindata[MaxDataLength - (8*numbytes) + i - 19];
+ //     mk_mon_debug_info(frame[i]);
 	}
+ CRC((EndOfData -1));
 	for (int i = EndOfData; i < (EndOfData+15);++i){
 		frame[i] = checksum[i-EndOfData];
 	}
@@ -206,6 +210,7 @@ void make_frame()
 	for (int i = stuffedlength; i<(stuffedlength+13); ++i){
 		frame[i] = 1;
 	}
+   frame[stuffedlength+2] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
 }
 
 bool send_frame(){
@@ -225,6 +230,7 @@ bool send_frame(){
        break;
      }
   }
+  
   return 1;
 }
  
@@ -248,17 +254,34 @@ bool send_frame(){
            current_recessive = 0;
          }
          else{
-           return;
+           
+           return 0;
          }
        }
-       
-       
-   
-   
    }
  
  }
-  
+ /*
+ void resetFrame(){
+	 memset(frame, 0, sizeof(frame));//set frame to zeros	
+}
+
+int DLCbin2dec(){
+	DLCdec = 0;
+	int N = 1;
+	for(int i=18; i>14; i--){
+		if(frame[i]==0){
+		DLCdec = DLCdec + N;
+		N = 2*N;
+		}
+		mk_mon_debug_info(DLCdec);
+	}
+	int lenghtToAck = 19+(DLCdec*8)+16;
+	return lenghtToAck;
+}
+ */ 
+
+
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
 		newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
@@ -268,15 +291,43 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 		}
 	}
 }
-else{
-	while(1){
 
-	}
+
+else{// you are actuator
+  
+
 }
-   
-    
 
+
+
+/*
+ while (1) {
+      if ((*rxPrioFilters) < 0){ //then we're master else slave
+      // as a master, to get the next frame to send from the sensor use:
+         newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
+         if (newFrameFromSensor == 1){
+  
+         make_frame();
+         queue_sending(1000);
+
+       
+         }
+      // as a slave, to send a received frame with priority rxPrioFilter to the actuator use:
+      }
+      else{
+ //      can_mac_tx_next_frame(RxFrameForActuator, &RxFrame);
+    
+     to send a CAN symbol on the CAN bus use:
+       can_phy_tx_symbol(can_port_id, TxSymbol)
+       to receive a CAN symbol from the CAN bus use:
+       can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
+       this function blocks until a new symbol is available on the bus
+    */
+
+   
    
  }
+ 
+ 
      
  
