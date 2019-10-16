@@ -207,7 +207,7 @@ void make_frame()
  //  frame[stuffedlength+1] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
 }
 
-bool send_frame(){
+int send_frame(){
   for (int j = 0; j<stuffedlength+13; j++){
     if (frame[j] == 0){
        can_phy_tx_symbol(can_port_id, DOMINANT);
@@ -219,7 +219,7 @@ bool send_frame(){
        can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
     }
      if (RxSymbol != frame[j] && j < 22){
-       return 0;
+       return 1; //1: Lost arbitration
        break;
      }
 	 if (j == (stuffedlength + 1) && RxSymbol == 0){
@@ -228,18 +228,18 @@ bool send_frame(){
 			 can_phy_tx_symbol(can_port_id, RECESSIVE);
 			 can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		 }
-		 goto sendframe_lab;
+		 return 2;	//2: Did not receive Ack
 	 }
   }
   
-  return 1;
+  return 0; //0: Executed succesfully
 }
  
  
  void queue_sending(int timeout){ // Timeout in number of symbols
    int symbolcount;
    int current_recessive;
-   bool framestatus;
+   int framestatus;
    while (symbolcount < timeout){
        can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
        symbolcount++;
@@ -252,14 +252,17 @@ bool send_frame(){
        if (current_recessive >= 11){
 		 sendframe_lab:
          framestatus = send_frame();
-         if (framestatus == 0){
+         if (framestatus == 1){  //Sensor lost arbitration - wait for 11 recessive again and send same frame
            current_recessive = 0;
          }
-         else{
-			newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
-			if (newFrameFromSensor == 1){
-				make_frame();
-				goto sendframe_lab;
+		 else if ( framestatus == 2){	//Sensor did not receive ack, send same frame again.
+			 goto sendframe_lab;
+		 }
+         else{ //Frame did not return error. Sending succesfull
+			newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);	//Check whether there is new data to send
+			if (newFrameFromSensor == 1){	//If there is new data...
+				make_frame();				//Generate a new frame.
+				goto sendframe_lab;			//Send the frame. This should start at the same time as the other sensors.
 			}
            return 0;
          }
