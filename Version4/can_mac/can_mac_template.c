@@ -57,13 +57,13 @@ void stuffing()
 }
 
 void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
-{  //Very inefficient CRC implementation! Can no doubt be improved
-  bool checkdata[98];
-  int k;
+{ 
+  bool checkdata[98];//dataend+15?
+  int k = 0;
   for (int j = 0; j < Data_end; j++){
-    checkdata[j] = frame[j];
+    checkdata[j] = frame[j];// make copy of frame
   }
-  for (int i = Data_end; i < (Data_end + 15); i++){
+  for (int i = Data_end; i < (Data_end + 15); i++){//should be 16
     checkdata[i] = 0;
     
   }
@@ -76,6 +76,7 @@ void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if dat
       {
         checkdata[k+l] = checkdata[k+l] ^ polynomial[l];
       }
+	  k++;
   
     }
   }
