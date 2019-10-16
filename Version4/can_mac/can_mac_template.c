@@ -303,6 +303,8 @@ void sendAck(){
 	can_phy_tx_symbol(can_port_id, RECESSIVE);
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	   
 }
+
+
   
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
@@ -321,17 +323,15 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 		//restart listening
 		mk_mon_debug_info(0x2);
 		errorRetry:
-		while(EOFCounter < 11 && ErrorCounter < 7){//wait until 11 ressecive or 7 dominants (error code) have passed
+		while(EOFCounter < 11){//wait until 11 ressecive or 7 dominants (error code) have passed
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
 			if(RxSymbol==1){
 				EOFCounter++;
-				mk_mon_debug_info(EOFCounter);
-				ErrorCounter = 0;
+//				mk_mon_debug_info(EOFCounter);
 			}//add to counter
 			else {
-				ErrorCounter++;//HOW TO MAKE SURE IT KEEPS LISTENING FOR 7 DOMINANTS?
 				EOFCounter = 0;
-				mk_mon_debug_info(ErrorCounter);				
+//				mk_mon_debug_info(EOFCounter);				
 			}
 		}
 		mk_mon_debug_info(0x3);
@@ -356,7 +356,9 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 					stuffedBit = 0;
 				}
 			}
-			else stuffedBit = 0;
+			else {
+				stuffedBit = 0;
+			}
 			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		}
 		stuffedBit = 0;
@@ -387,7 +389,7 @@ int EOFCounter = 0, ErrorCounter = 0, stuffedBit=0;
 			if(frame[i]!=checksum[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
 				resetFrame();
 				mk_mon_debug_info(0x8);
-				goto errorRetry;//go to the start of the actuator while loop to listen for 7 dominants
+				goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive
 			}
 		}
 		mk_mon_debug_info(0x9);
