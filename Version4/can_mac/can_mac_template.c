@@ -304,6 +304,7 @@ void detectSOF(){
 //		mk_mon_debug_info(2222);
 	}
 	frame[0] = RxSymbol;
+	stuffedBit = 1;
 	
 }
 
