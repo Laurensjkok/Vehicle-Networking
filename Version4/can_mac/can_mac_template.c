@@ -251,6 +251,7 @@ void resetFrame(){
 }
 
 unsigned long long bin2dec(int start, int end){
+	mk_mon_debug_info(0x6161);	
 	int result = 0;
 	int N = 1;
 	for(int i=end; i>(start-1); i--){
@@ -258,7 +259,7 @@ unsigned long long bin2dec(int start, int end){
 		result = result + N;
 		}
 		N = 2*N;		
-//		mk_mon_debug_info(DLCdec);
+		mk_mon_debug_info(result);
 	}
 	return result;	
 }
@@ -300,9 +301,7 @@ void detectSOF(){
 void receiveUntilDLC(){
 	for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 		if(stuffedBit<5){//unstuff while listening
-			frame[i] = RxSymbol;
-			mk_mon_debug_info(i);				
-			mk_mon_debug_info(frame[i]);					
+			frame[i] = RxSymbol;					
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);					
