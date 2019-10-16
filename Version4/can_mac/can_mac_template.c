@@ -29,6 +29,8 @@ int DLCdec;
 unsigned long data;
 int stuffedBit;
 
+
+int pow(int base, int exp){
 	if(exp < 0)
 	return -1;
 
