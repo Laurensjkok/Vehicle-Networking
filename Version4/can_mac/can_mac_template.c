@@ -61,6 +61,8 @@ void CRC(int length) //Data_end should be index of first bit of CRC. So if data 
  {	
 	 int k = 0;
 	 bool checkdata[83];
+	 memset(checkdata, 0, sizeof(checkdata));
+	 memset(checksum, 0, sizeof(checksum));
 	 for (int i = 0; i < length; i++){
 		 checkdata[i] = frame[i];
 	 }
