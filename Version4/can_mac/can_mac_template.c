@@ -301,7 +301,8 @@ void receiveUntilDLC(){
 	for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
-//			mk_mon_debug_info(frame[i]);					
+			mk_mon_debug_info(i);				
+			mk_mon_debug_info(frame[i]);					
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);					
@@ -374,11 +375,8 @@ else{// you are actuator
 		stuffedBit = 0;
 		errorRetry:
 		detectEOF();
-		mk_mon_debug_info(0x1234);
 		resetFrame();//make frame all zeros
-		mk_mon_debug_info(0x2345);
-		detectSOF();
-		mk_mon_debug_info(0x3456);		
+		detectSOF();	
 		receiveUntilDLC();
 		mk_mon_debug_info(0x4567);		
 		int DLCdec = bin2dec(18,15);//calculate dataLength
@@ -387,7 +385,7 @@ else{// you are actuator
 		int endOfData = 19+(DLCdec*8);
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
-
+		mk_mon_debug_info(5678);	
 //		mk_mon_debug_info(0x7);//received frame till ack
 		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
 			// bindata[i] = frame[i];
