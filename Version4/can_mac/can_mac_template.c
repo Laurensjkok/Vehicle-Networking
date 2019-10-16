@@ -399,7 +399,7 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 }
 
 else{// you are actuator
-	mk_mon_debug_info(0xZZZZZZZZZ);
+	mk_mon_debug_info(0xDDDDD);
 	mk_mon_debug_info(rxPrioFilters(1));
 	while(1){ 
 		//restart listening
