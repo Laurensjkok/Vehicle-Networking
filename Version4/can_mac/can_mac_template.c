@@ -96,7 +96,6 @@ void CRC(int length) //Data_end should be index of first bit of CRC. So if data 
 		}
 		N = 2*N;	
 	}
-	mk_mon_debug_info(result);
  }
 	
 
@@ -430,7 +429,6 @@ else{// you are actuator
 		bool dataError = checkCRC(lenghtToAck);		
 		if (dataError == 1){
 			resetFrame();
-//			mk_mon_debug_info(0x99999);
 			goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive			
 		}
 		//if this point is reached, the data is correct
