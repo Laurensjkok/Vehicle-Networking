@@ -329,8 +329,7 @@ void receiveUntilDLC(){
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
 
 		if(stuffedBit<5){//unstuff while listening
-			frame[i] = RxSymbol;
-			mk_mon_debug_info(frame[i]);	
+			frame[i] = RxSymbol;	
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);					
@@ -354,7 +353,6 @@ void receiveUntilAck(int lenghtToAck){
 	
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
-			mk_mon_debug_info(frame[i]);
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);							
@@ -374,7 +372,10 @@ void receiveUntilAck(int lenghtToAck){
  
 bool checkCRC(int lenghtToAck){
 	int j;
-	mk_mon_debug_info(lenghtToAck);
+	
+	for(int k=0; k<lenghtToAck;i++){
+		mk_mon_debug_info(frame[k]);
+	}
 	for (int i = 0; i<15;i++){
 		j = lenghtToAck-16+i;
 		
