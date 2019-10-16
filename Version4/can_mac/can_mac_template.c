@@ -58,7 +58,7 @@ void stuffing()
 
 void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
 { 
-	bool checkdata[98];
+	bool checkdata[98];//dataend+15?
 	int k = 0;
 	for (int j = 0; j < Data_end; j++){
 		checkdata[j] = frame[j];// make copy of frame
