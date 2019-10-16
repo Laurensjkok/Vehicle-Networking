@@ -25,31 +25,10 @@ int iddec;
 int EndOfData;
 int numbytes;
 int stuffedlength;
-<<<<<<< HEAD
-unsigned long long data;
-
-=======
 int DLCdec;
-unsigned long data;
+unsigned long long data;
 int stuffedBit;
 
-
-int pow(int base, int exp){
-	if(exp < 0)
-	return -1;
-
-	int result = 1;
-	while (exp)
-	{
-		if (exp & 1)
-			result *= base;
-		exp >>= 1;
-		base *= base;
-	}
-
-	return result;
-}
->>>>>>> Actuator
 
 void stuffing()
 {
