@@ -382,16 +382,10 @@ bool checkCRC(int lenghtToAck){
 }
 
 void sendToActuator(int lenghtToAck){
-	int ID;
-	ID = bin2dec(1,11);
-	for(int i = 0;i<rxPrioFiltersLen;i++){
-		if (ID == rxPrioFilters[i]){
-			RxFrame.ID = ID;
+			RxFrame.ID = bin2dec(1,11);
 			RxFrame.DLC = bin2dec(15,18);
 			RxFrame.Data = bin2dec(19,(lenghtToAck-16));
 			RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
-		}
-	}
 }	
 
 if ((*rxPrioFilters) < 0){ //then we're master else slave
@@ -432,10 +426,14 @@ else{// you are actuator
 			goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive			
 		}
 		//if this point is reached, the data is correct
-		sendAck();//send Acknowledgement on bus		
-
-		//send data to actuator
-		sendToActuator(lenghtToAck);
+		int ID;
+		ID = bin2dec(1,11);
+		for(int i = 0;i<rxPrioFiltersLen;i++){
+			if (ID == rxPrioFilters[i]){
+				sendAck();//send Acknowledgement on bus		
+				sendToActuator(lenghtToAck);
+			}
+		}
 			//send data to actuator?
 			//try again?
 
