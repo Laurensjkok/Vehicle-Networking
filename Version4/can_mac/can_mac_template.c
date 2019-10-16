@@ -91,7 +91,7 @@ void CRC(int length) //Data_end should be index of first bit of CRC. So if data 
 		}
 		N = 2*N;	
 	}
-	mk_mon_debug_info(result);
+//	mk_mon_debug_info(result);
  }
 	
 
@@ -124,7 +124,7 @@ void datadec2bin()
 data = TxFrame.Data;
 	unsigned long long n = data;
  
- mk_mon_debug_info(n);
+ //mk_mon_debug_info(n);
 	int i = 0;
 	int k = 0;
 	int LengthOfDataField = 0;
@@ -189,14 +189,14 @@ void make_frame()
 	for (int i = 15; i < 19; ++i)
 	{
 		frame[i] = DLCbin[i-15];
-   mk_mon_debug_info(frame[i]);
+//   mk_mon_debug_info(frame[i]);
 	}
 	for (int i = 19; i < EndOfData; ++i)
 	{
 		frame[i] = bindata[MaxDataLength - (8*numbytes) + i - 19];
  //     mk_mon_debug_info(frame[i]);
 	}
- CRC((EndOfData));
+	CRC((EndOfData));
 	for (int i = EndOfData; i < (EndOfData+15);++i){
 		frame[i] = checksum[i-EndOfData];
 	}
@@ -280,7 +280,7 @@ unsigned long long bin2dec(int start, int end){
 
 void sendAck(){
 	long henk = 1;
-	mk_mon_debug_info(henk);
+//	mk_mon_debug_info(henk);
 	can_phy_tx_symbol(can_port_id, DOMINANT);
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 	can_phy_tx_symbol(can_port_id, RECESSIVE);
@@ -331,9 +331,9 @@ void receiveUntilDLC(){
 		else {
 			stuffedBit = 0;
 			i--;
-			mk_mon_debug_info(0x6666);			
+//			mk_mon_debug_info(0x6666);			
 		}
-			mk_mon_debug_info(stuffedBit);
+//			mk_mon_debug_info(stuffedBit);
 	}	
 }
 
@@ -355,9 +355,9 @@ void receiveUntilAck(int lenghtToAck){
 		else {
 			stuffedBit = 0;
 			i--;
-			mk_mon_debug_info(0x6666);					
+//			mk_mon_debug_info(0x6666);					
 		}
-		mk_mon_debug_info(stuffedBit);		
+//		mk_mon_debug_info(stuffedBit);		
 	}
 }
  
@@ -402,30 +402,30 @@ else{// you are actuator
 		int DLCdec = bin2dec(15,18);//calculate dataLength			
 		int lenghtToAck = 19+(DLCdec*8)+16;
 		int endOfData = 19+(DLCdec*8);
-		mk_mon_debug_info(lenghtToAck);	
-		mk_mon_debug_info(endOfData);			
+//		mk_mon_debug_info(lenghtToAck);	
+//		mk_mon_debug_info(endOfData);			
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
 		for (int i=0;i<lenghtToAck;i++){
-			mk_mon_debug_info(frame[i]);	
+//			mk_mon_debug_info(frame[i]);	
 		}
 //		mk_mon_debug_info(0x7);//received frame till ack
 		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
 			// bindata[i] = frame[i];
 		// }
 		CRC(endOfData);//determine CRC from data
-		mk_mon_debug_info(0x5678);			
+//		mk_mon_debug_info(0x5678);			
 		bool dataError = checkCRC(lenghtToAck);
-		mk_mon_debug_info(dataError);			
+//		mk_mon_debug_info(dataError);			
 		if (dataError == 1){
 			resetFrame();
-			mk_mon_debug_info(0x99999);
+//			mk_mon_debug_info(0x99999);
 			goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive			
 		}
 //		mk_mon_debug_info(0x9);
 		//if this point is reached, the data is correct
 		sendAck();//send Acknowledgement on bus
-		mk_mon_debug_info(0x6789);			
+//		mk_mon_debug_info(0x6789);			
 //		mk_mon_debug_info(0xA);
 		//send data to actuator
 		sendToActuator(lenghtToAck);
