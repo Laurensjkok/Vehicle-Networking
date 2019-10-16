@@ -224,9 +224,11 @@ int send_frame(){
        break;
      }
 	 if (j == (stuffedlength + 1) && RxSymbol == 1){
-		 for(int k = 0; k<11;k++){
-			 can_phy_tx_symbol(can_port_id, RECESSIVE);
-			 can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+		 can_phy_tx_symbol(can_port_id, DOMINANT);				//A bit of creative error handling, because full CAN error frames are not implemented
+	     can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);		//First, one Dominant is sent by the sensor in place of Ack. Delimiter
+		 for(int k = 0; k<11;k++){								//This is to reset all send counters on Other sensors. 
+			 can_phy_tx_symbol(can_port_id, RECESSIVE);			//After that 11 recessive are sent, this sensor will join the rest in arbitration
+			 can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	//NOTE: This is not part of any CAN standard, but the best solution in this case.
 		 }
 		 return 2;	//2: Did not receive Ack
 	 }
