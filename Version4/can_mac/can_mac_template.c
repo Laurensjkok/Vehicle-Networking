@@ -14,7 +14,7 @@ static void hw_can_mac_driver(
   bool newFrameFromSensor;
   CAN_SYMBOL TxSymbol, RxSymbol;
   
-  bool frame[135];
+bool frame[135];
 bool framestart[15];
 bool bindata[MaxDataLength];
 bool idbin[IdLength];
@@ -25,8 +25,31 @@ int iddec;
 int EndOfData;
 int numbytes;
 int stuffedlength;
+<<<<<<< HEAD
 unsigned long long data;
 
+=======
+int DLCdec;
+unsigned long data;
+int stuffedBit;
+
+
+int pow(int base, int exp){
+	if(exp < 0)
+	return -1;
+
+	int result = 1;
+	while (exp)
+	{
+		if (exp & 1)
+			result *= base;
+		exp >>= 1;
+		base *= base;
+	}
+
+	return result;
+}
+>>>>>>> Actuator
 
 void stuffing()
 {
@@ -58,12 +81,12 @@ void CRC(int Data_end)
 {	//Very inefficient CRC implementation! Can no doubt be improved
 	bool checkdata[98];
 	int k;
-	for (int j = 0; j < Data_end; j++){
+
+	for (int j = 0; j < Data_end; j++){//make copy to work with
 		checkdata[j] = frame[j];
 	}
 	for (int i = (Data_end + 1); i < (Data_end + 1 + 15); i++){
-		checkdata[i] = 0;
-		
+		checkdata[i] = 0;	
 	}
 	while (k<(Data_end + 1)){
 		if (checkdata[k]==0){
@@ -181,7 +204,6 @@ void make_frame()
 
   numbytes = TxFrame.DLC;
 
-	
 	EndOfData = (19+(8*numbytes)); // Not really end of data. Indicates first bit of CRC field
 	frame[0] = 0;
 	for (int i = 1; i < (IdLength + 1); ++i)
@@ -261,27 +283,129 @@ bool send_frame(){
    }
  
  }
- /*
- void resetFrame(){
+ 
+void resetFrame(){
 	 memset(frame, 0, sizeof(frame));//set frame to zeros	
 }
 
-int DLCbin2dec(){
-	DLCdec = 0;
+unsigned long long bin2dec(int start, int end){
+	int result = 0;
 	int N = 1;
-	for(int i=18; i>14; i--){
-		if(frame[i]==0){
-		DLCdec = DLCdec + N;
-		N = 2*N;
+	for(int i=end; i>(start-1); i--){
+		if(frame[i]==1){
+		result = result + N;
 		}
-		mk_mon_debug_info(DLCdec);
+		N = 2*N;		
+//		mk_mon_debug_info(DLCdec);
 	}
-	int lenghtToAck = 19+(DLCdec*8)+16;
-	return lenghtToAck;
+	return result;	
 }
- */ 
 
+// int DLCbin2dec(){
+	// DLCdec = 0;
+	// int N = 1;
+	// for(int i=18; i>14; i--){
+		// if(frame[i]==1){
+		// DLCdec = DLCdec + N;
+		// }
+		// N = 2*N;		
+		mk_mon_debug_info(DLCdec);
+	// }
+	// int lenghtToAck = 19+(DLCdec*8)+16;
+	// return lenghtToAck;
+// }
 
+void sendAck(){
+	long henk = 1;
+	mk_mon_debug_info(henk);
+	can_phy_tx_symbol(can_port_id, DOMINANT);
+	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+	can_phy_tx_symbol(can_port_id, RECESSIVE);
+	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	   
+}
+
+void detectEOF(){
+	int EOFCounter = 0;
+	while(EOFCounter < 11){//wait until 11 ressecive or 7 dominants (error code) have passed
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
+		if(RxSymbol==1){
+			EOFCounter++;
+//				mk_mon_debug_info(EOFCounter);
+		}//add to counter
+		else {
+			EOFCounter = 0;
+//				mk_mon_debug_info(EOFCounter);				
+		}
+	}	
+}
+
+void detectSOF(){
+	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
+	while(RxSymbol==1){//wait for SOF (i==1)
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+//		mk_mon_debug_info(2222);
+	}
+	
+}
+
+void receiveUntilDLC(){
+	for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
+		if(stuffedBit<5){//unstuff while listening
+			frame[i] = RxSymbol;
+//			mk_mon_debug_info(frame[i]);					
+			if(frame[i]==frame[i-1]){
+				stuffedBit++;
+//				mk_mon_debug_info(stuffedBit);					
+			}
+			else{
+				stuffedBit = 0;
+			}
+		}
+		else {
+			stuffedBit = 0;
+			i--;
+		}
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+	}	
+}
+
+void receiveUntilAck(int lenghtToAck){
+	for(int i =19;i<lenghtToAck;i++){
+		if(stuffedBit<5){//unstuff while listening
+			frame[i] = RxSymbol;
+			if(frame[i]==frame[i-1]){
+				stuffedBit++;
+//				mk_mon_debug_info(stuffedBit);							
+			}
+			else{
+				stuffedBit = 0;
+			}
+		}
+		else {
+			stuffedBit = 0;
+			i--;
+		}
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
+	}
+}
+ 
+bool checkCRC(int lenghtToAck){
+	int j;
+	for (int i = 0; i<15;i++){
+		j = lenghtToAck-16+i;
+		if(frame[j]!=checksum[i]){
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void sendToActuator(int lenghtToAck){
+	RxFrame.ID = bin2dec(1,11);
+	RxFrame.DLC = bin2dec(15,18);
+	RxFrame.Data = bin2dec(19,(lenghtToAck-16));
+	RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
+}	
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
 		newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
@@ -292,42 +416,48 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 	}
 }
 
-
 else{// you are actuator
-  
+mk_mon_debug_info(0x1234);
+	while(1){ 
+		//restart listening
+//		mk_mon_debug_info(0x2);
+		stuffedBit = 0;
+		errorRetry:
+		detectEOF();
+//		mk_mon_debug_info(0x3);
+		resetFrame();//make frame all zeros
+//		mk_mon_debug_info(RxSymbol);
+		detectSOF();
+//		mk_mon_debug_info(0x4);
+		receiveUntilDLC();
+//		mk_mon_debug_info(0x5);
+		int DLCdec = bin2dec(18,14);//calculate dataLength
+		int lenghtToAck = 19+(DLCdec*8)+16;		
+//		mk_mon_debug_info(lenghtToAck);
+		receiveUntilAck(lenghtToAck);
 
-}
+//		mk_mon_debug_info(0x7);//received frame till ack
+		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
+			// bindata[i] = frame[i];
+		// }
+		CRC();//determine CRC from data
+		bool dataError = checkCRC(lenghtToAck);
+		if (dataError == 1){
+			resetFrame();
+//			mk_mon_debug_info(0x8);
+			goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive			
+		}
+//		mk_mon_debug_info(0x9);
+		//if this point is reached, the data is correct
+		sendAck();//send Acknowledgement on bus
+//		mk_mon_debug_info(0xA);
+		//send data to actuator
+		sendToActuator(lenghtToAck);
+			//send data to actuator?
+			//try again?
 
-
-
-/*
- while (1) {
-      if ((*rxPrioFilters) < 0){ //then we're master else slave
-      // as a master, to get the next frame to send from the sensor use:
-         newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
-         if (newFrameFromSensor == 1){
-  
-         make_frame();
-         queue_sending(1000);
-
-       
-         }
-      // as a slave, to send a received frame with priority rxPrioFilter to the actuator use:
-      }
-      else{
- //      can_mac_tx_next_frame(RxFrameForActuator, &RxFrame);
-    
-     to send a CAN symbol on the CAN bus use:
-       can_phy_tx_symbol(can_port_id, TxSymbol)
-       to receive a CAN symbol from the CAN bus use:
-       can_phy_rx_symbol_blocking(can_port_id,&RxSymbol)
-       this function blocks until a new symbol is available on the bus
-    */
 
    
-   
- }
- 
- 
-     
- 
+	}//end of actuator while loop
+}//end of actuator part
+}//end of static void hw_mac_driver
