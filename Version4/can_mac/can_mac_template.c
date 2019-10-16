@@ -56,7 +56,6 @@ void stuffing()
 	
 }
 
-<<<<<<< HEAD
 void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
 { 
 	bool checkdata[98];
@@ -69,32 +68,29 @@ void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if dat
 	}
 	while (k<Data_end){
 		if (checkdata[k]==0){
-
+		  k++;
+		}
+		else{
+			for (int l=0; l<16; l++){
+				checkdata[k+l] = checkdata[k+l] ^ polynomial[l];
+			}
 			k++;
-			 
-		 }
- 		 else{
-			 for (int z=0; z<16; z++)
-			 {	
-
-				 checkdata[k+z] = checkdata[k+z] ^ polynomial[z];
-			 }
-		 } 
-	 }  
-	 for (int m = 0; m<15; m++){
-		checksum[m] = checkdata[length+m];
+		}
 	}
-
+	for (int m = 0; m<15; m++){//should be 16?
+		checksum[m] = checkdata[Data_end+m];
+		mk_mon_debug_info(checksum[m]);		
+	}
 	int result = 0;
 	int N = 1;
 	for(int i=14; i>(0-1); i--){
 		if(checksum[i]==1){
 			result = result + N;
 		}
-		N = 2*N;	
+		N = 2*N;		
 	}
-	mk_mon_debug_info(result);
- }
+	mk_mon_debug_info(result);			
+}
 	
 
 void iddec2bin()
@@ -198,7 +194,7 @@ void make_frame()
 		frame[i] = bindata[MaxDataLength - (8*numbytes) + i - 19];
  //     mk_mon_debug_info(frame[i]);
 	}
- CRC((EndOfData));
+ CRC((EndOfData -1));
 	for (int i = EndOfData; i < (EndOfData+15);++i){
 		frame[i] = checksum[i-EndOfData];
 	}
