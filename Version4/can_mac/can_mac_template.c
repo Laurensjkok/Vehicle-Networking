@@ -47,9 +47,10 @@ void stuffing()
 				frame[c+1] = frame[c];
 			}
 			frame[i+5] = ins;
-			mk_mon_debug_info(insertedbits);
-			mk_mon_debug_info(val);
+			
 		}
+		mk_mon_debug_info(insertedbits);
+		mk_mon_debug_info(val);
 		if (i >= (insertedbits + EndOfData + 13)){
 			break;
 		}
