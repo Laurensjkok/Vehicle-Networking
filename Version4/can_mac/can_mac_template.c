@@ -316,8 +316,10 @@ void detectSOF(){
 void receiveUntilDLC(){
 	for(int i = 1;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
+			mk_mon_debug_info(stuffedBit);
 		if(stuffedBit<5){//unstuff while listening
-			frame[i] = RxSymbol;					
+			frame[i] = RxSymbol;
+
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);					
@@ -338,8 +340,10 @@ void receiveUntilDLC(){
 void receiveUntilAck(int lenghtToAck){
 	for(int i =19;i<lenghtToAck;i++){
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+			mk_mon_debug_info(stuffedBit);		
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
+			
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);							
