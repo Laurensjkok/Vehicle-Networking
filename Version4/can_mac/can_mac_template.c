@@ -222,7 +222,7 @@ int send_frame(){
        return 1; //1: Lost arbitration
        break;
      }
-	 if (j == (stuffedlength + 1) && RxSymbol == 0){
+	 if (j == (stuffedlength + 1) && RxSymbol == 1){
 		 mk_mon_debug_info(0x1111);
 		 for(int k = 0; k<11;k++){
 			 can_phy_tx_symbol(can_port_id, RECESSIVE);
