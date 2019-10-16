@@ -378,7 +378,7 @@ else{// you are actuator
 		detectSOF();	
 		receiveUntilDLC();
 		mk_mon_debug_info(0x4567);		
-		int DLCdec = bin2dec(18,15);//calculate dataLength
+		int DLCdec = bin2dec(15,18);//calculate dataLength
 		mk_mon_debug_info(DLCdec);			
 		int lenghtToAck = 19+(DLCdec*8)+16;
 		int endOfData = 19+(DLCdec*8);
