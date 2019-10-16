@@ -374,6 +374,7 @@ bool checkCRC(int lenghtToAck){
 	int j;
 	for (int i = 0; i<15;i++){
 		j = lenghtToAck-16+i;
+		mk_mon_debug_info(j);
 		if(frame[j]!=checksum[i]){
 			return 1;
 		}
@@ -415,7 +416,6 @@ else{// you are actuator
 //		mk_mon_debug_info(endOfData);			
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
-		mk_mon_debug_info(0xA);
 		for (int i=0;i<lenghtToAck;i++){
 //			mk_mon_debug_info(frame[i]);	
 		}
