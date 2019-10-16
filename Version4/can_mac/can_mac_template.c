@@ -337,6 +337,7 @@ void receiveUntilDLC(){
 
 void receiveUntilAck(int lenghtToAck){
 	for(int i =19;i<lenghtToAck;i++){
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
 			if(frame[i]==frame[i-1]){
@@ -351,7 +352,7 @@ void receiveUntilAck(int lenghtToAck){
 			stuffedBit = 0;
 			i--;
 		}
-		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
+	
 	}
 }
  
