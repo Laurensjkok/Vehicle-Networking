@@ -351,6 +351,7 @@ void receiveUntilAck(int lenghtToAck){
 		else {
 			stuffedBit = 0;
 			i--;
+			mk_mon_debug_info(0x6666);					
 		}
 	
 	}
