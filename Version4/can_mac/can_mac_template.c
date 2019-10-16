@@ -194,7 +194,7 @@ void make_frame()
 	for (int i = stuffedlength; i<(stuffedlength+13); ++i){
 		frame[i] = 1;
 	}
-   frame[stuffedlength+2] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
+   frame[stuffedlength+1] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
 }
 
 bool send_frame(){
@@ -355,6 +355,7 @@ void sendToActuator(int lenghtToAck){
 	RxFrame.Data = bin2dec(19,(lenghtToAck-16));
 	RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
 }	
+
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
 		newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
