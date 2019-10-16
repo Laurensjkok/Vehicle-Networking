@@ -408,7 +408,6 @@ else{// you are actuator
 		resetFrame();//make frame all zeros
 		detectSOF();	
 		receiveUntilDLC();	
-		mk_mon_debug_info(0xA);
 		int DLCdec = bin2dec(15,18);//calculate dataLength			
 		int lenghtToAck = 19+(DLCdec*8)+16;
 		int endOfData = 19+(DLCdec*8);
@@ -416,6 +415,7 @@ else{// you are actuator
 //		mk_mon_debug_info(endOfData);			
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
+		mk_mon_debug_info(0xA);
 		for (int i=0;i<lenghtToAck;i++){
 //			mk_mon_debug_info(frame[i]);	
 		}
