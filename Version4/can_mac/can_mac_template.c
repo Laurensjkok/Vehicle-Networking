@@ -85,23 +85,6 @@ void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if dat
 }
 	
 
-/*
-int RoundUp(double input)
-{
-	int whole;
-	double rem;
-	int output;
-	whole = (int)input;
-	rem = input - (double)whole;
-	if (rem == 0){
-		output = whole;
-	}
-	else{
-		output = whole + 1;
-	}
-	return output;
-}*/
-
 void iddec2bin()
 {
 	int n = iddec;
@@ -280,19 +263,6 @@ unsigned long long bin2dec(int start, int end){
 	return result;	
 }
 
-// int DLCbin2dec(){
-	// DLCdec = 0;
-	// int N = 1;
-	// for(int i=18; i>14; i--){
-		// if(frame[i]==1){
-		// DLCdec = DLCdec + N;
-		// }
-		// N = 2*N;		
-		mk_mon_debug_info(DLCdec);
-	// }
-	// int lenghtToAck = 19+(DLCdec*8)+16;
-	// return lenghtToAck;
-// }
 
 void sendAck(){
 	long henk = 1;
