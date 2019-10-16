@@ -392,7 +392,7 @@ else{// you are actuator
 		mk_mon_debug_info(endOfData);			
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
-		for (i=0;i<lenghtToAck;i++){
+		for (int i=0;i<lenghtToAck;i++){
 			mk_mon_debug_info(frame[i]);	
 		}
 //		mk_mon_debug_info(0x7);//received frame till ack
