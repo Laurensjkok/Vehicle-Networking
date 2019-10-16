@@ -293,9 +293,7 @@ void sendAck(){
 	long henk = 1;
 //	mk_mon_debug_info(henk);
 	can_phy_tx_symbol(can_port_id, DOMINANT);
-	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
-	can_phy_tx_symbol(can_port_id, RECESSIVE);
-	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	   
+	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);   
 }
 
 void detectEOF(){
