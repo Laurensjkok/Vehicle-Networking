@@ -345,7 +345,7 @@ void receiveUntilAck(int lenghtToAck){
 	
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
-			if(frame[i]==frame[i-1]){
+			if(frame[i]==prevsymbol){
 				stuffedBit++;						
 			}
 			else{
