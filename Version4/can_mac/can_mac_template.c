@@ -22,6 +22,7 @@ bool checksum[15];
 bool DLCbin[4];
 bool polynomial[16] = {1,1,0,0,0,1,0,1,1,0,0,1,1,0,0,1};
 bool prevsymbol;
+int priofilters[4];
 int iddec;
 int EndOfData;
 int numbytes;
@@ -382,10 +383,16 @@ bool checkCRC(int lenghtToAck){
 }
 
 void sendToActuator(int lenghtToAck){
-	RxFrame.ID = bin2dec(1,11);
-	RxFrame.DLC = bin2dec(15,18);
-	RxFrame.Data = bin2dec(19,(lenghtToAck-16));
-	RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
+	int ID;
+	ID = bin2dec(1,11);
+	for(int i = 0;i<rxPrioFiltersLen;i++){
+		if (ID == rxPrioFilters[i]){
+			RxFrame.ID = ID;
+			RxFrame.DLC = bin2dec(15,18);
+			RxFrame.Data = bin2dec(19,(lenghtToAck-16));
+			RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
+		}
+	}
 }	
 
 if ((*rxPrioFilters) < 0){ //then we're master else slave
@@ -399,8 +406,9 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 }
 
 else{// you are actuator
-	mk_mon_debug_info(0xDDDDD);
-	mk_mon_debug_info(rxPrioFiltersLen);
+	for (int i =0;i<rxPrioFiltersLen;i++){
+		priofilters[i] = rxPrioFilters[i];
+	}
 	while(1){ 
 		//restart listening
 		stuffedBit = 0;
