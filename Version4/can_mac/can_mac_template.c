@@ -251,7 +251,6 @@ void resetFrame(){
 }
 
 unsigned long long bin2dec(int start, int end){
-	mk_mon_debug_info(0x6161);	
 	int result = 0;
 	int N = 1;
 	for(int i=end; i>(start-1); i--){
@@ -259,7 +258,6 @@ unsigned long long bin2dec(int start, int end){
 		result = result + N;
 		}
 		N = 2*N;		
-		mk_mon_debug_info(result);
 	}
 	return result;	
 }
@@ -376,21 +374,22 @@ else{// you are actuator
 		detectEOF();
 		resetFrame();//make frame all zeros
 		detectSOF();	
-		receiveUntilDLC();
-		mk_mon_debug_info(0x4567);		
-		int DLCdec = bin2dec(15,18);//calculate dataLength
-		mk_mon_debug_info(DLCdec);			
+		receiveUntilDLC();	
+		int DLCdec = bin2dec(15,18);//calculate dataLength			
 		int lenghtToAck = 19+(DLCdec*8)+16;
 		int endOfData = 19+(DLCdec*8);
+		mk_mon_debug_info(lenghtToAck);	
+		mk_mon_debug_info(endOfData);			
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
-		mk_mon_debug_info(5678);	
 //		mk_mon_debug_info(0x7);//received frame till ack
 		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
 			// bindata[i] = frame[i];
 		// }
 		CRC(endOfData);//determine CRC from data
+		mk_mon_debug_info(0x5678);			
 		bool dataError = checkCRC(lenghtToAck);
+		mk_mon_debug_info(dataError);			
 		if (dataError == 1){
 			resetFrame();
 //			mk_mon_debug_info(0x8);
@@ -399,6 +398,7 @@ else{// you are actuator
 //		mk_mon_debug_info(0x9);
 		//if this point is reached, the data is correct
 		sendAck();//send Acknowledgement on bus
+		mk_mon_debug_info(0x6789);			
 //		mk_mon_debug_info(0xA);
 		//send data to actuator
 		sendToActuator(lenghtToAck);
