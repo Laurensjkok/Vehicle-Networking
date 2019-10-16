@@ -56,7 +56,7 @@ void stuffing()
 	
 }
 
-
+<<<<<<< HEAD
 void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
 { 
 	bool checkdata[98];
