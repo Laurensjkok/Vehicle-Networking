@@ -429,6 +429,7 @@ else{// you are actuator
 		int ID;
 		ID = bin2dec(1,11);
 		for(int i = 0;i<rxPrioFiltersLen;i++){
+			mk_mon_debug_info(rxPrioFilters[i]);
 			if (ID == rxPrioFilters[i]){
 				sendAck();//send Acknowledgement on bus		
 				sendToActuator(lenghtToAck);
