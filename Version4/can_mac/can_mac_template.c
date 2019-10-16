@@ -350,6 +350,7 @@ void receiveUntilAck(int lenghtToAck){
 			}
 			else{
 				stuffedBit = 1;
+				prevsymbol = RxSymbol;
 			}
 		}
 		else {
