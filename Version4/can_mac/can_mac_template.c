@@ -51,7 +51,7 @@ void stuffing()
 		}
 		mk_mon_debug_info(insertedbits);
 		mk_mon_debug_info(val);
-		if (i >= (insertedbits + EndOfData + 13)){
+		if (i >= (insertedbits + EndOfData + 10)){
 			break;
 		}
 		i++;
