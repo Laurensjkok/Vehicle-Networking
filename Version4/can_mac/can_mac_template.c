@@ -21,6 +21,7 @@ bool idbin[IdLength];
 bool checksum[15];
 bool DLCbin[4];
 bool polynomial[16] = {1,1,0,0,0,1,0,1,1,0,0,1,1,0,0,1};
+bool prevsymbol;
 int iddec;
 int EndOfData;
 int numbytes;
@@ -316,20 +317,23 @@ void detectSOF(){
 }
 
 void receiveUntilDLC(){
+	prevsymbol = 0;
 	for(int i = 1;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
 
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;	
-			if(frame[i]==frame[i-1]){
+			if(frame[i]==prevsymbol){
 				stuffedBit++;			
 			}
 			else{
 				stuffedBit = 1;
+				prevsymbol = RxSymbol;
 			}
 		}
 		else {
-			stuffedBit = 0;
+			stuffedBit = 1;
+			prevsymbol = RxSymbol;
 			i--;		
 		}
 	}	
@@ -349,7 +353,8 @@ void receiveUntilAck(int lenghtToAck){
 			}
 		}
 		else {
-			stuffedBit = 0;
+			stuffedBit = 1;
+			prevsymbol = RxSymbol;
 			i--;				
 		}
 	}
