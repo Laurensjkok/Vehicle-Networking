@@ -204,7 +204,7 @@ void make_frame()
 	for (int i = stuffedlength; i<(stuffedlength+13); ++i){
 		frame[i] = 1;
 	}
-   frame[stuffedlength+1] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
+ //  frame[stuffedlength+1] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
 }
 
 bool send_frame(){
