@@ -2,7 +2,10 @@
 #define CAN_MSG_RX_OFFSET_2      (3500000000)  //nr of tile clk cycles
 
 #define CAN_MSG_RX_PRIOS_2   4
-int rxPrioFilt_2[CAN_MSG_RX_PRIOS_2] = {0,1,2,3};   //message ID filters
+int rxPrioFilt_2[CAN_MSG_RX_PRIOS_2] = {-1};   //message ID filters
+
+// #define CAN_MSG_RX_PRIOS_2   4
+// int rxPrioFilt_2[CAN_MSG_RX_PRIOS_2] = {0,1,2,3};   //message ID filters
 
 // #define CAN_MSG_RX_NUM_FILTERS_2   1
 // int rxPrioFilt_2[CAN_MSG_RX_NUM_FILTERS_2] = {-1};   //message ID filters
