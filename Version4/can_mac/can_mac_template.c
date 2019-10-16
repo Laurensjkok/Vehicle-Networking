@@ -86,6 +86,15 @@ void stuffing()
 		checksum[m] = checkdata[length+m];
 	}
 
+	int result = 0;
+	int N = 1;
+	for(int i=14; i>(0-1); i--){
+		if(checksum[i]==1){
+			result = result + N;
+		}
+		N = 2*N;	
+	}
+	mk_mon_debug_info(result);
  }
 	
 
