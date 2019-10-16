@@ -313,6 +313,7 @@ void receiveUntilDLC(){
 		else {
 			stuffedBit = 0;
 			i--;
+			mk_mon_debug_info(0x6666);			
 		}
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 	}	
