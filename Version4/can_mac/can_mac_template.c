@@ -27,9 +27,8 @@ int numbytes;
 int stuffedlength;
 int DLCdec;
 unsigned long data;
+int stuffedBit;
 
-
-int pow(int base, int exp){
 	if(exp < 0)
 	return -1;
 
@@ -285,11 +284,11 @@ int DLCbin2dec(){
 	DLCdec = 0;
 	int N = 1;
 	for(int i=18; i>14; i--){
-		if(frame[i]==0){
+		if(frame[i]==1){
 		DLCdec = DLCdec + N;
-		N = 2*N;
 		}
-		mk_mon_debug_info(DLCdec);
+		N = 2*N;		
+//		mk_mon_debug_info(DLCdec);
 	}
 	int lenghtToAck = 19+(DLCdec*8)+16;
 	return lenghtToAck;
@@ -320,21 +319,22 @@ void detectEOF(){
 }
 
 void detectSOF{
+	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
 	while(RxSymbol==1){//wait for SOF (i==1)
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 //		mk_mon_debug_info(2222);
-	}	
+	}
+	
 }
 
 void receiveUntilDLC(){
-	int stuffedBit = 0;
 	for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
-			mk_mon_debug_info(frame[i]);					
+//			mk_mon_debug_info(frame[i]);					
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
-				mk_mon_debug_info(stuffedBit);					
+//				mk_mon_debug_info(stuffedBit);					
 			}
 			else{
 				stuffedBit = 0;
@@ -342,11 +342,42 @@ void receiveUntilDLC(){
 		}
 		else {
 			stuffedBit = 0;
+			i--;
 		}
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 	}	
 }
-  
+
+void receiveUntilAck(int lenghtToAck){
+	for(int i =19;i<lenghtToAck;i++){
+		if(stuffedBit<5){//unstuff while listening
+			frame[i] = RxSymbol;
+			if(frame[i]==frame[i-1]){
+				stuffedBit++;
+//				mk_mon_debug_info(stuffedBit);							
+			}
+			else{
+				stuffedBit = 0;
+			}
+		}
+		else {
+			stuffedBit = 0;
+			i--;
+		}
+		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
+	}
+}
+ 
+bool checkCRC(int lenghtToAck){
+	int j;
+	for (int i = 0; i<15;i++){
+		j = lenghtToAck-16+i;
+		if(frame[j]!=checksum[i]){
+			return 1;
+		}
+	}
+	return 0;
+}	
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
 		newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
@@ -362,49 +393,35 @@ mk_mon_debug_info(0x1234);
 	while(1){ 
 		//restart listening
 //		mk_mon_debug_info(0x2);
+		stuffedBit = 0;
 		errorRetry:
 		detectEOF();
 //		mk_mon_debug_info(0x3);
 		resetFrame();//make frame all zeros
-		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 //		mk_mon_debug_info(RxSymbol);
 		detectSOF();
 //		mk_mon_debug_info(0x4);
 		receiveUntilDLC();
-		mk_mon_debug_info(0x5);
-		//WORKING FOR SURE UNTIL HERE
+//		mk_mon_debug_info(0x5);
 		int lenghtToAck = DLCbin2dec();//calculate dataLength
-		mk_mon_debug_info(lenghtToAck);
-		for(int i =19;i<lenghtToAck;i++){
-			if(stuffedBit<5){//unstuff while listening
-				frame[i] = RxSymbol;
-				if(frame[i]==frame[i-1]){
-					stuffedBit++;
-					mk_mon_debug_info(stuffedBit);							
-				}
-				else{
-					stuffedBit = 0;
-				}
-			}
-			else stuffedBit = 0;
-			can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
-		}
-		mk_mon_debug_info(0x7);//received frame till ack
-		for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
-			bindata[i] = frame[i];
-		}
+//		mk_mon_debug_info(lenghtToAck);
+		receiveUntilAck(lenghtToAck);
+
+//		mk_mon_debug_info(0x7);//received frame till ack
+		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
+			// bindata[i] = frame[i];
+		// }
 		CRC();//determine CRC from data
-		for(int i = (lenghtToAck-16);i<lenghtToAck;i++){
-			if(frame[i]!=checksum[(i-lenghtToAck+16)]){//check if CRC from data matches actual data
-				resetFrame();
-				mk_mon_debug_info(0x8);
-				goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive
-			}
+		bool dataError = checkCRC(lenghtToAck);
+		if (dataError == 1){
+			resetFrame();
+//			mk_mon_debug_info(0x8);
+			goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive			
 		}
-		mk_mon_debug_info(0x9);
+//		mk_mon_debug_info(0x9);
 		//if this point is reached, the data is correct
 		sendAck();//send Acknowledgement on bus
-		mk_mon_debug_info(0xA);
+//		mk_mon_debug_info(0xA);
 		//send data to actuator
 			//send data to actuator?
 			//try again?
