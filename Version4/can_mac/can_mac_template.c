@@ -201,14 +201,14 @@ void make_frame()
 		frame[i] = checksum[i-EndOfData];
 	}
 	stuffing();
-	for (int i = stuffedlength; i<(stuffedlength+12); ++i){
+	for (int i = stuffedlength; i<(stuffedlength+13); ++i){
 		frame[i] = 1;
 	}
  //  frame[stuffedlength+1] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
 }
 
 bool send_frame(){
-  for (int j = 0; j<stuffedlength+12; j++){
+  for (int j = 0; j<stuffedlength+13; j++){
     if (frame[j] == 0){
        can_phy_tx_symbol(can_port_id, DOMINANT);
        can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
