@@ -85,9 +85,7 @@ void stuffing()
 	 for (int m = 0; m<15; m++){
 		checksum[m] = checkdata[length+m];
 	}
-			 for(int p =0; p<15;p++){
-			  printf("%d", checksum[p]);
-		 }
+
  }
 	
 
