@@ -218,8 +218,8 @@ bool send_frame(){
        can_phy_tx_symbol(can_port_id, RECESSIVE);
        can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
     }
-    
-     if (RxSymbol != frame[j]){
+
+     if (RxSymbol != frame[j] && j < 22){
        return 0;
        break;
      }
