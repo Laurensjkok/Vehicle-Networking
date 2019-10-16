@@ -283,7 +283,7 @@ void resetFrame(){
 }
 
 unsigned long long bin2dec(int start, int end){
-	result = 0;
+	int result = 0;
 	int N = 1;
 	for(int i=end; i>(start-1); i--){
 		if(frame[i]==1){
