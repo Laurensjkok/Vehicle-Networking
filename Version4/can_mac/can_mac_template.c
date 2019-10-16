@@ -370,19 +370,18 @@ else{// you are actuator
 
 	while(1){ 
 		//restart listening
-//		mk_mon_debug_info(0x2);
 		stuffedBit = 0;
 		errorRetry:
 		detectEOF();
 		mk_mon_debug_info(0x1234);
-//		mk_mon_debug_info(0x3);
 		resetFrame();//make frame all zeros
-//		mk_mon_debug_info(RxSymbol);
+		mk_mon_debug_info(0x2345);
 		detectSOF();
-//		mk_mon_debug_info(0x4);
+		mk_mon_debug_info(0x3456);		
 		receiveUntilDLC();
-//		mk_mon_debug_info(0x5);
+		mk_mon_debug_info(0x4567);		
 		int DLCdec = bin2dec(18,14);//calculate dataLength
+		mk_mon_debug_info(DLCdec);			
 		int lenghtToAck = 19+(DLCdec*8)+16;
 		int endOfData = 19+(DLCdec*8);
 //		mk_mon_debug_info(lenghtToAck);
