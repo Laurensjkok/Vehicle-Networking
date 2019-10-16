@@ -51,7 +51,7 @@ void stuffing()
 		}
 		mk_mon_debug_info(insertedbits);
 		mk_mon_debug_info(val);
-		if (i >= (insertedbits + EndOfData + 10)){
+		if (i >= (insertedbits + EndOfData + 10)){ //up to including CRC is exposed to bit stuffing. Anything beyond this point can no longer be stuffed.
 			break;
 		}
 		i++;
