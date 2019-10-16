@@ -357,10 +357,14 @@ void receiveUntilAck(int lenghtToAck){
  
 bool checkCRC(int lenghtToAck){
 	int j;
-	
+	for(int k=0; k<15;k++){
+		mk_mon_debug_info(checksum[k]);
+	}
+	k_mon_debug_info(0xAAAAAAA);
 	for(int k=0; k<lenghtToAck;k++){
 		mk_mon_debug_info(frame[k]);
 	}
+	
 	for (int i = 0; i<15;i++){
 		j = lenghtToAck-16+i;
 		
