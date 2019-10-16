@@ -252,6 +252,7 @@ int send_frame(){
        if (current_recessive >= 11){
 		 sendframe_lab:
          framestatus = send_frame();
+		 mk_mon_debug_info(framestatus);
          if (framestatus == 1){  //Sensor lost arbitration - wait for 11 recessive again and send same frame
            current_recessive = 0;
          }
