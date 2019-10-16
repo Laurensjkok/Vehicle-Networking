@@ -58,37 +58,34 @@ void stuffing()
 
 void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
 { 
-  bool checkdata[98];//dataend+15?
-  int k = 0;
-  for (int j = 0; j < Data_end; j++){
-    checkdata[j] = frame[j];// make copy of frame
-  }
-  for (int i = Data_end; i < (Data_end + 15); i++){//should be 16
-    checkdata[i] = 0;
-    
-  }
-  while (k<Data_end){
-    if (checkdata[k]==0){
-      k++;
-    }
-    else{
-      for (int l=0; l<16; l++)
-      {
-        checkdata[k+l] = checkdata[k+l] ^ polynomial[l];
-      }
-	  k++;
-  
-    }
-  }
-  for (int m = 0; m<15; m++){
-    checksum[m] = checkdata[Data_end+m];
-	mk_mon_debug_info(checksum[m]);		
-  }
-  	int result = 0;
+	bool checkdata[98];//dataend+15?
+	int k = 0;
+	for (int j = 0; j < Data_end; j++){
+		checkdata[j] = frame[j];// make copy of frame
+	}
+	for (int i = Data_end; i < (Data_end + 15); i++){//should be 16
+		checkdata[i] = 0;	
+	}
+	while (k<Data_end){
+		if (checkdata[k]==0){
+		  k++;
+		}
+		else{
+			for (int l=0; l<16; l++){
+				checkdata[k+l] = checkdata[k+l] ^ polynomial[l];
+			}
+			k++;
+		}
+	}
+	for (int m = 0; m<15; m++){//should be 16?
+		checksum[m] = checkdata[Data_end+m];
+		mk_mon_debug_info(checksum[m]);		
+	}
+	int result = 0;
 	int N = 1;
 	for(int i=14; i>(0-1); i--){
 		if(checksum[i]==1){
-		result = result + N;
+			result = result + N;
 		}
 		N = 2*N;		
 	}
@@ -403,7 +400,7 @@ else{// you are actuator
 		mk_mon_debug_info(dataError);			
 		if (dataError == 1){
 			resetFrame();
-//			mk_mon_debug_info(0x8);
+			mk_mon_debug_info(0x99999);
 			goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive			
 		}
 //		mk_mon_debug_info(0x9);
