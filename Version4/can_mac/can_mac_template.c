@@ -199,7 +199,7 @@ void make_frame()
 		frame[i] = bindata[MaxDataLength - (8*numbytes) + i - 19];
  //     mk_mon_debug_info(frame[i]);
 	}
- CRC((EndOfData -1));
+ CRC((EndOfData));
 	for (int i = EndOfData; i < (EndOfData+15);++i){
 		frame[i] = checksum[i-EndOfData];
 	}
