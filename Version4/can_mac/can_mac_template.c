@@ -295,19 +295,19 @@ unsigned long long bin2dec(int start, int end){
 	return result;	
 }
 
-int DLCbin2dec(){
-	DLCdec = 0;
-	int N = 1;
-	for(int i=18; i>14; i--){
-		if(frame[i]==1){
-		DLCdec = DLCdec + N;
-		}
-		N = 2*N;		
-//		mk_mon_debug_info(DLCdec);
-	}
-	int lenghtToAck = 19+(DLCdec*8)+16;
-	return lenghtToAck;
-}
+// int DLCbin2dec(){
+	// DLCdec = 0;
+	// int N = 1;
+	// for(int i=18; i>14; i--){
+		// if(frame[i]==1){
+		// DLCdec = DLCdec + N;
+		// }
+		// N = 2*N;		
+		mk_mon_debug_info(DLCdec);
+	// }
+	// int lenghtToAck = 19+(DLCdec*8)+16;
+	// return lenghtToAck;
+// }
 
 void sendAck(){
 	long henk = 1;
@@ -425,7 +425,8 @@ mk_mon_debug_info(0x1234);
 //		mk_mon_debug_info(0x4);
 		receiveUntilDLC();
 //		mk_mon_debug_info(0x5);
-		int lenghtToAck = DLCbin2dec();//calculate dataLength
+		int DLCdec = bin2dec(18,14);//calculate dataLength
+		int lenghtToAck = 19+(DLCdec*8)+16;		
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
 
