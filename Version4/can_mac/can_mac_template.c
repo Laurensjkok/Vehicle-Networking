@@ -41,12 +41,14 @@ void stuffing()
 	while(i<122){
 		val = frame[i];
 		if ((val == frame[i+1]) && (val == frame[i+2]) && (val == frame[i+3]) && (val == frame[i+4])){
-		ins = 1 - frame[i];
-		insertedbits++;
-		for (c = n - 1; c >= (i+5) - 1; c--) {  
-			frame[c+1] = frame[c];
-		}
-		frame[i+5] = ins;
+			ins = 1 - frame[i];
+			insertedbits++;
+			for (c = n - 1; c >= (i+5) - 1; c--) {  
+				frame[c+1] = frame[c];
+			}
+			frame[i+5] = ins;
+			mk_mon_debug_info(insertedbits);
+			mk_mon_debug_info(val);
 		}
 		if (i >= (insertedbits + EndOfData + 13)){
 			break;
@@ -363,13 +365,13 @@ void receiveUntilAck(int lenghtToAck){
  
 bool checkCRC(int lenghtToAck){
 	int j;
-	for(int k=0; k<15;k++){
+/*	for(int k=0; k<15;k++){
 		mk_mon_debug_info(checksum[k]);
 	}
 	mk_mon_debug_info(0xAAAAAAA);
 	for(int k=0; k<lenghtToAck;k++){
 		mk_mon_debug_info(frame[k]);
-	}
+	}*/
 	
 	for (int i = 0; i<15;i++){
 		j = lenghtToAck-16+i;
@@ -421,7 +423,7 @@ else{// you are actuator
 		bool dataError = checkCRC(lenghtToAck);		
 		if (dataError == 1){
 			resetFrame();
-			mk_mon_debug_info(0x99999);
+//			mk_mon_debug_info(0x99999);
 			goto errorRetry;//go to the start of the actuator while loop to listen for 11 ressecive			
 		}
 		//if this point is reached, the data is correct
