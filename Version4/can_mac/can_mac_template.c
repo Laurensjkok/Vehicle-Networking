@@ -302,7 +302,6 @@ void detectEOF(){
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
 		if(RxSymbol==1){
 			EOFCounter++;
-					mk_mon_debug_info(0xA);
 //				mk_mon_debug_info(EOFCounter);
 		}//add to counter
 		else {
@@ -409,6 +408,7 @@ else{// you are actuator
 		resetFrame();//make frame all zeros
 		detectSOF();	
 		receiveUntilDLC();	
+		mk_mon_debug_info(0xA);
 		int DLCdec = bin2dec(15,18);//calculate dataLength			
 		int lenghtToAck = 19+(DLCdec*8)+16;
 		int endOfData = 19+(DLCdec*8);
