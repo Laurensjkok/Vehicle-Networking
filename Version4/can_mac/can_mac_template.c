@@ -81,6 +81,7 @@ void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if dat
   }
   for (int m = 0; m<15; m++){
     checksum[m] = checkdata[Data_end+m];
+	mk_mon_debug_info(checksum[m]);		
   }
   	int result = 0;
 	int N = 1;
