@@ -15,6 +15,6 @@ MB_SHARED=mb_shared
 USE_VGA_GRABBER?=0
 
 # specify timeout
-USER_TIMEOUT?=60
+USER_TIMEOUT?=20
 
 include .platform/platform.mk
