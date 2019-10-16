@@ -303,11 +303,12 @@ void detectSOF(){
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 //		mk_mon_debug_info(2222);
 	}
+	frame[0] = RxSymbol;
 	
 }
 
 void receiveUntilDLC(){
-	for(int i = 0;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
+	for(int i = 1;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;					
 			if(frame[i]==frame[i-1]){
