@@ -411,7 +411,8 @@ mk_mon_debug_info(0x1234);
 		receiveUntilDLC();
 //		mk_mon_debug_info(0x5);
 		int DLCdec = bin2dec(18,14);//calculate dataLength
-		int lenghtToAck = 19+(DLCdec*8)+16;		
+		int lenghtToAck = 19+(DLCdec*8)+16;
+		int endOfData = 19+(DLCdec*8);
 //		mk_mon_debug_info(lenghtToAck);
 		receiveUntilAck(lenghtToAck);
 
@@ -419,7 +420,7 @@ mk_mon_debug_info(0x1234);
 		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
 			// bindata[i] = frame[i];
 		// }
-		CRC();//determine CRC from data
+		CRC(endOfData);//determine CRC from data
 		bool dataError = checkCRC(lenghtToAck);
 		if (dataError == 1){
 			resetFrame();
