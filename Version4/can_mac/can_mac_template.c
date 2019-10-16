@@ -224,6 +224,11 @@ bool send_frame(){
      }
 	 if (j == (stuffedlength + 1) && RxSymbol == 0){
 		 mk_mon_debug_info(0x1111);
+		 for(int k = 0; k<11;k++){
+			 can_phy_tx_symbol(can_port_id, RECESSIVE);
+			 can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
+		 }
+		 goto sendframe_lab;
 	 }
   }
   
