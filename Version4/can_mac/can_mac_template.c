@@ -77,32 +77,32 @@ void stuffing()
 	
 }
 
-void CRC(int Data_end)
-{	//Very inefficient CRC implementation! Can no doubt be improved
-	bool checkdata[98];
-	int k;
-
-	for (int j = 0; j < Data_end; j++){//make copy to work with
-		checkdata[j] = frame[j];
-	}
-	for (int i = (Data_end + 1); i < (Data_end + 1 + 15); i++){
-		checkdata[i] = 0;	
-	}
-	while (k<(Data_end + 1)){
-		if (checkdata[k]==0){
-			k++;
-		}
-		else{
-			for (int l=0; l<16; l++)
-			{
-				checkdata[k+l] = checkdata[k+l] ^ polynomial[l];
-			}
-	
-		}
-	}
-	for (int m = 0; m<15; m++){
-		checksum[m] = checkdata[(Data_end + 1)+m];
-	}
+void CRC(int Data_end) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
+{  //Very inefficient CRC implementation! Can no doubt be improved
+  bool checkdata[98];
+  int k;
+  for (int j = 0; j < Data_end; j++){
+    checkdata[j] = frame[j];
+  }
+  for (int i = Data_end; i < (Data_end + 15); i++){
+    checkdata[i] = 0;
+    
+  }
+  while (k<Data_end){
+    if (checkdata[k]==0){
+      k++;
+    }
+    else{
+      for (int l=0; l<16; l++)
+      {
+        checkdata[k+l] = checkdata[k+l] ^ polynomial[l];
+      }
+  
+    }
+  }
+  for (int m = 0; m<15; m++){
+    checksum[m] = checkdata[Data_end+m];
+  }
 }
 	
 
