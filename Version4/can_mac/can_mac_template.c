@@ -246,12 +246,17 @@ bool send_frame(){
          current_recessive = 0;
        }
        if (current_recessive >= 11){
+		 sendframe_lab:
          framestatus = send_frame();
          if (framestatus == 0){
            current_recessive = 0;
          }
          else{
-           
+			newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
+			if (newFrameFromSensor == 1){
+				make_frame();
+				goto sendframe_lab;
+			}
            return 0;
          }
        }
