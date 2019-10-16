@@ -375,8 +375,10 @@ bool checkCRC(int lenghtToAck){
 	mk_mon_debug_info(lenghtToAck);
 	for (int i = 0; i<15;i++){
 		j = lenghtToAck-16+i;
-		mk_mon_debug_info(j);
+		
 		if(frame[j]!=checksum[i]){
+			mk_mon_debug_info(frame[j]);
+			mk_mon_debug_info(checksum[i]);
 			return 1;
 		}
 	}
