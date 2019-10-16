@@ -386,6 +386,7 @@ void sendToActuator(int lenghtToAck){
 	RxFrame.DLC = bin2dec(15,18);
 	RxFrame.Data = bin2dec(19,(lenghtToAck-16));
 	RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
+			mk_mon_debug_info(0xB);
 }	
 
 if ((*rxPrioFilters) < 0){ //then we're master else slave
@@ -435,7 +436,7 @@ else{// you are actuator
 		//if this point is reached, the data is correct
 		sendAck();//send Acknowledgement on bus
 //		mk_mon_debug_info(0x6789);			
-//		mk_mon_debug_info(0xA);
+		mk_mon_debug_info(0xA);
 		//send data to actuator
 		sendToActuator(lenghtToAck);
 			//send data to actuator?
