@@ -222,7 +222,7 @@ bool send_frame(){
        return 0;
        break;
      }
-	 if (j == (stuffedlength + 2){
+	 if (j == (stuffedlength + 2)){
 		 mk_mon_debug_info(0x1111);
 	 }
   }
