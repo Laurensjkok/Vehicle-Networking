@@ -330,7 +330,7 @@ void receiveUntilDLC(){
 
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
-
+			mk_mon_debug_info(frame[i]);	
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);					
@@ -354,7 +354,7 @@ void receiveUntilAck(int lenghtToAck){
 	
 		if(stuffedBit<5){//unstuff while listening
 			frame[i] = RxSymbol;
-			
+			mk_mon_debug_info(frame[i]);
 			if(frame[i]==frame[i-1]){
 				stuffedBit++;
 //				mk_mon_debug_info(stuffedBit);							
