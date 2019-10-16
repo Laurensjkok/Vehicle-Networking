@@ -282,6 +282,19 @@ void resetFrame(){
 	 memset(frame, 0, sizeof(frame));//set frame to zeros	
 }
 
+unsigned long long bin2dec(int start, int end){
+	result = 0;
+	int N = 1;
+	for(int i=end; i>(start-1); i--){
+		if(frame[i]==1){
+		result = result + N;
+		}
+		N = 2*N;		
+//		mk_mon_debug_info(DLCdec);
+	}
+	return result;	
+}
+
 int DLCbin2dec(){
 	DLCdec = 0;
 	int N = 1;
@@ -379,6 +392,13 @@ bool checkCRC(int lenghtToAck){
 		}
 	}
 	return 0;
+}
+
+void sendToActuator(int lenghtToAck){
+	RxFrame.ID = bin2dec(1,11);
+	RxFrame.DLC = bin2dec(15,18);
+	RxFrame.Data = bin2dec(19,(lenghtToAck-16));
+	RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
 }	
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
@@ -425,6 +445,7 @@ mk_mon_debug_info(0x1234);
 		sendAck();//send Acknowledgement on bus
 //		mk_mon_debug_info(0xA);
 		//send data to actuator
+		sendToActuator(lenghtToAck);
 			//send data to actuator?
 			//try again?
 
