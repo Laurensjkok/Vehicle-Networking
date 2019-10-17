@@ -4,6 +4,6 @@
 //#define CAN_MSG_RX_NUM_FILTERS_3                    4
 //int rxPrioFilt_3[CAN_MSG_RX_NUM_FILTERS_3] = {0,1,2,3};   //message ID filters
 
-#define CAN_MSG_RX_PRIOS_3                    1
-int rxPrioFilt_3[CAN_MSG_RX_PRIOS_3] = {-1};   //message ID filters
+#define CAN_MSG_RX_PRIOS_3                    4
+int rxPrioFilt_3[CAN_MSG_RX_PRIOS_3] = {0,1,2,3};   //message ID filters
 
