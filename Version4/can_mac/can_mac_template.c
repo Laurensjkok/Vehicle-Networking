@@ -39,7 +39,7 @@ void stuffing()
 	int i = 0;
 	while(i<122){
 		val = frame[i];
-		if ((val == frame[i+1]) && (val == frame[i+2]) && (val == frame[i+3]) && (val == frame[i+4])){ //Check whether the next 4 bits all have the same value.	
+		if ((val == frame[i+1]) && (val == frame[i+2]) && (val == frame[i+3]) && (val == frame[i+4])){ //Check whether the next 4 bits all have the same value.	|\label{line:sp}|
 			ins = 1 - frame[i]; //Invert the bit
 			insertedbits++;
 			for (c = n - 1; c >= (i+5) - 1; c--) {  
