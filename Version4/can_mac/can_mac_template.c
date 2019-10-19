@@ -227,11 +227,11 @@ int send_frame(){
  
  }
  
-void resetFrame(){
+void resetFrame(){ |\label{line:resetFrame}|
 	 memset(frame, 0, sizeof(frame));//set frame to zeros	
 }
 
-unsigned long long bin2dec(int start, int end){
+unsigned long long bin2dec(int start, int end){|\label{line:bin2dec}|
 	int result = 0;
 	int N = 1;
 	for(int i=end; i>(start-1); i--){
@@ -243,12 +243,12 @@ unsigned long long bin2dec(int start, int end){
 	return result;	
 }
 
-void sendAck(){
+void sendAck(){ |\label{line:sendAck}|
 	can_phy_tx_symbol(can_port_id, DOMINANT);
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);   
 }
 
-void detectEOF(){
+void detectEOF(){|\label{line:detectEOF}|
 	int EOFCounter = 0;
 	while(EOFCounter < 11){//wait until 11 ressecive or 7 dominants (error code) have passed
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);//read port
@@ -261,7 +261,7 @@ void detectEOF(){
 	}	
 }
 
-void detectSOF(){
+void detectSOF(){ |\label{line:detectSOF}|
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
 	while(RxSymbol==1){//wait for SOF (i==1)
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
@@ -271,7 +271,7 @@ void detectSOF(){
 	
 }
 
-void receiveUntilDLC(){
+void receiveUntilDLC(){ |\label{line:receiveUntilDLC}|
 	prevsymbol = 0;
 	for(int i = 1;i<19;i++){//receive frame while unstuffing until DLC (0<i<18). Also stores SOF.
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
@@ -294,7 +294,7 @@ void receiveUntilDLC(){
 	}	
 }
 
-void receiveUntilAck(int lenghtToAck){
+void receiveUntilAck(int lenghtToAck){ |\label{line:receiveUntilAck}|
 	for(int i =19;i<lenghtToAck;i++){
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 	
@@ -316,7 +316,7 @@ void receiveUntilAck(int lenghtToAck){
 	}
 }
  
-bool checkCRC(int lenghtToAck){
+bool checkCRC(int lenghtToAck){ |\label{line:checkCRC}|
 	int j;
 	for (int i = 0; i<15;i++){
 		j = lenghtToAck-16+i;
@@ -328,7 +328,7 @@ bool checkCRC(int lenghtToAck){
 	return 0;
 }
 
-void sendToActuator(int lenghtToAck){
+void sendToActuator(int lenghtToAck){ |\label{line:sendToActuator}|
 			RxFrame.ID = bin2dec(1,11);
 			RxFrame.DLC = bin2dec(15,18);
 			RxFrame.Data = bin2dec(19,(lenghtToAck-16));
