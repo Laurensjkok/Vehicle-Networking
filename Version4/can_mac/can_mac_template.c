@@ -120,8 +120,6 @@ void DLCdec2bin(int n)
 		i++;
 	}
 }
-
-
 void datadec2bin()
 {
 data = TxFrame.Data;
@@ -204,7 +202,6 @@ int send_frame(){
   return 0; //0: Executed succesfully
 }
  
- 
  void queue_sending(int timeout){ // Timeout in number of symbols
    int symbolcount;
    int current_recessive;
@@ -255,7 +252,6 @@ unsigned long long bin2dec(int start, int end){
 	}
 	return result;	
 }
-
 
 void sendAck(){
 	can_phy_tx_symbol(can_port_id, DOMINANT);
