@@ -3,7 +3,6 @@
 #define IdLength 11
 #define MaxDataLength 64
 
-
 static void hw_can_mac_driver(
 		       volatile CAN_PORT *can_port_id,
 		       CAN_FRAME * volatile *TxFrameFromSensor,
@@ -58,7 +57,6 @@ void stuffing()
 	
 }
 
-
 void CRC(int length) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
  {	
 	 int k = 0;
@@ -87,7 +85,6 @@ void CRC(int length) //Data_end should be index of first bit of CRC. So if data 
 		checksum[m] = checkdata[length+m]; //At the end, write result to checksum
 	}
  }
-	
 
 void iddec2bin()
 {
@@ -111,6 +108,7 @@ void DLCdec2bin(int n)
 		i++;
 	}
 }
+
 void datadec2bin()
 {
 data = TxFrame.Data;
@@ -160,7 +158,6 @@ void make_frame()
 	for (int i = stuffedlength; i<(stuffedlength+13); ++i){
 		frame[i] = 1;
 	}
- //  frame[stuffedlength+1] = 0;    //REMOVE THIS LINE WHEN ACK IS PROPERLY IMPLEMENTED
 }
 
 int send_frame(){
@@ -224,7 +221,6 @@ int send_frame(){
          }
        }
    }
- 
  }
  
 void resetFrame(){ |\label{line:resetFrame}|
@@ -268,7 +264,6 @@ void detectSOF(){ |\label{line:detectSOF}|
 	}
 	stuffedBit = 1;
 	frame[0] = RxSymbol;
-	
 }
 
 void receiveUntilDLC(){ |\label{line:receiveUntilDLC}|
@@ -345,7 +340,7 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 	}
 }
 
-else{// you are actuator
+else{// you are an actuator
 	for (int i =0;i<rxPrioFiltersLen;i++){
 		priofilters[i] = rxPrioFilters[i];
 	}
