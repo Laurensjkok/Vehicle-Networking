@@ -31,7 +31,6 @@ int DLCdec;
 unsigned long long data;
 int stuffedBit;
 
-
 void stuffing()
 {
 	int insertedbits = 0;
@@ -127,7 +126,6 @@ void datadec2bin()
 {
 data = TxFrame.Data;
 	unsigned long long n = data;
- 
 	int i = 0;
 	int k = 0;
 	int LengthOfDataField = 0;
@@ -138,36 +136,7 @@ data = TxFrame.Data;
 		n = n/2;
 		i++;
      
-	}
-//	i = 0;
-/*	while (k == 0)
-	{
-		if (i == 63 && bindata[i] == 0){
-			LengthOfDataField = 0;
-			break;
-		}
-		else{
-		k = bindata[i];
-		LengthOfDataField = MaxDataLength - i;
-		i++;
-		}
-	}
-	
-	dnumbytes = (double)LengthOfDataField / 8;
-	LengthOfDataField = RoundUp(dnumbytes); */
-//	int BitsOfDataField = LengthOfDataField * 8;
-//	bool DataOut[BitsOfDataField];
-//	for (i = 0; i < LengthOfDataField; ++i)
-//	{
-//		DataOut[BitsOfDataField -i -1] = bindata[MaxDataLength -i -1];
-//	}
-//	dnumbytes2 = (dnumbytes + 0.5);
-//	printf("%f \n", dnumbytes2);
-//	inumbytes = dnumbytes2;
-//	printf("%d \n", inumbytes);
-//	printf("%d \n", LengthOfDataField);
-//	return LengthOfDataField;
-	
+	}	
 }
 
 void make_frame()
@@ -175,10 +144,8 @@ void make_frame()
 	iddec = TxFrame.ID;
 	iddec2bin();
 	datadec2bin();
-  DLCdec2bin(TxFrame.DLC);
-
-  numbytes = TxFrame.DLC;
-
+	DLCdec2bin(TxFrame.DLC);
+	numbytes = TxFrame.DLC;
 	EndOfData = (19+(8*numbytes)); // Not really end of data. Indicates first bit of CRC field
 	frame[0] = 0;
 	for (int i = 1; i < (IdLength + 1); ++i)
@@ -365,14 +332,6 @@ void receiveUntilAck(int lenghtToAck){
  
 bool checkCRC(int lenghtToAck){
 	int j;
-/*	for(int k=0; k<15;k++){
-		mk_mon_debug_info(checksum[k]);
-	}
-	mk_mon_debug_info(0xAAAAAAA);
-	for(int k=0; k<lenghtToAck;k++){
-		mk_mon_debug_info(frame[k]);
-	}*/
-	
 	for (int i = 0; i<15;i++){
 		j = lenghtToAck-16+i;
 		
@@ -415,12 +374,7 @@ else{// you are actuator
 		int DLCdec = bin2dec(15,18);//calculate dataLength			
 		int lenghtToAck = 19+(DLCdec*8)+16;
 		int endOfData = 19+(DLCdec*8);
-
 		receiveUntilAck(lenghtToAck);
-
-		// for(int i = 19; i<(lenghtToAck-16); i++){//make copy of data to use in CRC()
-			// bindata[i] = frame[i];
-		// }
 		CRC(endOfData);//determine CRC from data		
 		bool dataError = checkCRC(lenghtToAck);		
 		if (dataError == 1){
@@ -435,12 +389,7 @@ else{// you are actuator
 				sendAck();//send Acknowledgement on bus		
 				sendToActuator(lenghtToAck);
 			}
-		}
-			//send data to actuator?
-			//try again?
-
-
-   
+		}  
 	}//end of actuator while loop
 }//end of actuator part
 }//end of static void hw_mac_driver
