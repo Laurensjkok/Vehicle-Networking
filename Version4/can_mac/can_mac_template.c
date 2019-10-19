@@ -41,17 +41,17 @@ void stuffing()
 	int i = 0;
 	while(i<122){
 		val = frame[i];
-		if ((val == frame[i+1]) && (val == frame[i+2]) && (val == frame[i+3]) && (val == frame[i+4])){
-			ins = 1 - frame[i];
+		if ((val == frame[i+1]) && (val == frame[i+2]) && (val == frame[i+3]) && (val == frame[i+4])){ //Check whether the next 4 bits all have the same value.	
+			ins = 1 - frame[i]; //Invert the bit
 			insertedbits++;
 			for (c = n - 1; c >= (i+5) - 1; c--) {  
-				frame[c+1] = frame[c];
+				frame[c+1] = frame[c]; //Move all the bits after the stuffed bit one place further down the array
 			}
-			frame[i+5] = ins;
+			frame[i+5] = ins; //Insert the stuffed bit
 			
 		}
 		if (i >= (insertedbits + EndOfData + 10)){ //up to including CRC is exposed to bit stuffing. Anything beyond this point can no longer be stuffed.
-			break;
+			break;										
 		}
 		i++;
 	}
@@ -67,34 +67,25 @@ void CRC(int length) //Data_end should be index of first bit of CRC. So if data 
 	 memset(checkdata, 0, sizeof(checkdata));
 	 memset(checksum, 0, sizeof(checksum));
 	 for (int i = 0; i < length; i++){
-		 checkdata[i] = frame[i];
+		 checkdata[i] = frame[i]; //Write frame into checkdata
 	 }
-	 for (int i = length; i < (length+15); i++){
+	 for (int i = length; i < (length+15); i++){ //Add 15 bit filler
 		 checkdata[i] = 0;		 
 	 }
   	 while (k<length){
-		 if (checkdata[k]==0){
+		 if (checkdata[k]==0){ //Skip all bits that are zero
 
 			k++;			 
 		 }
  		 else{
 			 for (int z=0; z<16; z++)
 			 {
-				 checkdata[k+z] = checkdata[k+z] ^ polynomial[z];
+				 checkdata[k+z] = checkdata[k+z] ^ polynomial[z]; //XOR checkdata with polynomial
 			 }
 		 } 
 	 }  
 	 for (int m = 0; m<15; m++){
-		checksum[m] = checkdata[length+m];
-	}
-
-	int result = 0;
-	int N = 1;
-	for(int i=14; i>(0-1); i--){
-		if(checksum[i]==1){
-			result = result + N;
-		}
-		N = 2*N;	
+		checksum[m] = checkdata[length+m]; //At the end, write result to checksum
 	}
  }
 	
@@ -105,8 +96,8 @@ void iddec2bin()
 	int i = 0;
 	while (n > 0)
 	{
-		idbin[IdLength-i -1 ] = n % 2;
-		n = n/2;
+		idbin[IdLength-i -1 ] = n % 2; //Take n mod 2 at every step
+		n = n/2;	//divide n by 2, move to next bit.
 		i++;
 	}
 }
@@ -139,34 +130,7 @@ data = TxFrame.Data;
 		i++;
      
 	}
-//	i = 0;
-/*	while (k == 0)
-	{
-		if (i == 63 && bindata[i] == 0){
-			LengthOfDataField = 0;
-			break;
-		}
-		else{
-		k = bindata[i];
-		LengthOfDataField = MaxDataLength - i;
-		i++;
-		}
-	}
-	
-	dnumbytes = (double)LengthOfDataField / 8;
-	LengthOfDataField = RoundUp(dnumbytes); */
-//	int BitsOfDataField = LengthOfDataField * 8;
-//	bool DataOut[BitsOfDataField];
-//	for (i = 0; i < LengthOfDataField; ++i)
-//	{
-//		DataOut[BitsOfDataField -i -1] = bindata[MaxDataLength -i -1];
-//	}
-//	dnumbytes2 = (dnumbytes + 0.5);
-//	printf("%f \n", dnumbytes2);
-//	inumbytes = dnumbytes2;
-//	printf("%d \n", inumbytes);
-//	printf("%d \n", LengthOfDataField);
-//	return LengthOfDataField;
+
 	
 }
 
