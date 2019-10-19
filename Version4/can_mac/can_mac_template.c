@@ -58,7 +58,7 @@ void stuffing()
 }
 
 
-void CRC(int length) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
+void CRC(int length) |\label{line:CRC}| //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
  {	
 	 int k = 0;
 	 bool checkdata[83];
