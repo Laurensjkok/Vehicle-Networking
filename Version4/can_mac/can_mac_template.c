@@ -22,7 +22,6 @@ bool checksum[15];
 bool DLCbin[4];
 bool polynomial[16] = {1,1,0,0,0,1,0,1,1,0,0,1,1,0,0,1};
 bool prevsymbol;
-int priofilters[4];
 int iddec;
 int EndOfData;
 int numbytes;
@@ -346,9 +345,6 @@ if ((*rxPrioFilters) < 0){ //then we're master else slave
 }
 
 else{// you are actuator
-	for (int i =0;i<rxPrioFiltersLen;i++){
-		priofilters[i] = rxPrioFilters[i];
-	}
 	while(1){ 
 		//restart listening
 		stuffedBit = 0;
