@@ -324,6 +324,7 @@ void sendToActuator(int lenghtToAck){ 			//|\label{line:sendToActuator}|
 	RxFrame.DLC = bin2dec(15,18);
 	RxFrame.Data = bin2dec(19,(lenghtToAck-16));
 	RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
+	can_mac_tx_next_frame(RxFrameForActuator, &RxFrame);
 }	
 
 if ((*rxPrioFilters) < 0){ //then we're master else slave
