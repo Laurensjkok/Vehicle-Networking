@@ -52,11 +52,10 @@ void stuffing()
 		}
 		i++;
 	}
-	stuffedlength = EndOfData + 15 + insertedbits; //Indicates index of CRC delimiter bit
-	
+	stuffedlength = EndOfData + 15 + insertedbits; //Indicates index of CRC delimiter bit |\label{line:stuffedlength}|
 }
 
-void CRC(int length) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27
+void CRC(int length) //Data_end should be index of first bit of CRC. So if data is one byte, Data_End should be 27 |\label{line:CRC}|
  {	
 	 int k = 0;
 	 bool checkdata[83];
@@ -130,7 +129,7 @@ void make_frame()
 	iddec2bin();
 	datadec2bin();
 	DLCdec2bin(TxFrame.DLC);
-	numbytes = TxFrame.DLC;
+	numbytes = TxFrame.DLC; //Fetch ID, DLC, data and convert to binary |\label{line:fetch_convert}|
 	EndOfData = (19+(8*numbytes)); // Not really end of data. Indicates first bit of CRC field
 	frame[0] = 0;
 	for (int i = 1; i < (IdLength + 1); ++i)
@@ -159,7 +158,7 @@ void make_frame()
 	}
 }
 
-int send_frame(){
+int send_frame(){ //When 11 recessive are received, start sending. |\label{line:send_frame}|
   for (int j = 0; j<stuffedlength+13; j++){
     if (frame[j] == 0){
        can_phy_tx_symbol(can_port_id, DOMINANT);
@@ -174,7 +173,7 @@ int send_frame(){
        return 1; //1: Lost arbitration
        break;
      }
-	 if (j == (stuffedlength + 1) && RxSymbol == 1){
+	 if (j == (stuffedlength + 1) && RxSymbol == 1){			//If a recessive is received in place of the ACK (dominant) |\label{line:creative_error_handling}|
 		 can_phy_tx_symbol(can_port_id, DOMINANT);				//A bit of creative error handling, because full CAN error frames are not implemented
 	     can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);		//First, one Dominant is sent by the sensor in place of Ack. Delimiter
 		 for(int k = 0; k<11;k++){								//This is to reset all send counters on Other sensors. 
@@ -188,7 +187,7 @@ int send_frame(){
   return 0; //0: Executed succesfully
 }
  
- void queue_sending(int timeout){ // Timeout in number of symbols
+ void queue_sending(int timeout){ // Timeout in number of symbols |\label{line:queue_sending}|
    int symbolcount;
    int current_recessive;
    int framestatus;
@@ -211,8 +210,8 @@ int send_frame(){
 			 goto sendframe_lab;
 		 }
          else{ //Frame did not return error. Sending succesfull
-			newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);	//Check whether there is new data to send
-			if (newFrameFromSensor == 1){	//If there is new data...
+			newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);	//Check whether there is new data to send |\label{line:send_another_frame}|
+			if (newFrameFromSensor == 1){	//If there is new data... 
 				make_frame();				//Generate a new frame.
 				goto sendframe_lab;			//Send the frame. This should start at the same time as the other sensors.
 			}
@@ -323,18 +322,18 @@ bool checkCRC(int lenghtToAck){ 			//|\label{line:checkCRC}|
 }
 
 void sendToActuator(int lenghtToAck){ 			//|\label{line:sendToActuator}|
-			RxFrame.ID = bin2dec(1,11);
-			RxFrame.DLC = bin2dec(15,18);
-			RxFrame.Data = bin2dec(19,(lenghtToAck-16));
-			RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
+	RxFrame.ID = bin2dec(1,11);
+	RxFrame.DLC = bin2dec(15,18);
+	RxFrame.Data = bin2dec(19,(lenghtToAck-16));
+	RxFrame.CRC = bin2dec((lenghtToAck-16),lenghtToAck);
 }	
 
 if ((*rxPrioFilters) < 0){ //then we're master else slave
 	while(1){
 		newFrameFromSensor = can_mac_rx_next_frame(TxFrameFromSensor, &TxFrame);
-        if (newFrameFromSensor == 1){
+        if (newFrameFromSensor == 1){	//Check whether sensor wants to send new data |\label{line:CheckFrameFromSensor}|
 			make_frame();
-			queue_sending(1000);
+			queue_sending(10000);
 		}
 	}
 }
