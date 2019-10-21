@@ -45,7 +45,6 @@ void stuffing()
 				frame[c+1] = frame[c]; //Move all the bits after the stuffed bit one place further down the array
 			}
 			frame[i+5] = ins; //Insert the stuffed bit
-			
 		}
 		if (i >= (insertedbits + EndOfData + 10)){ //up to including CRC is exposed to bit stuffing. Anything beyond this point can no longer be stuffed.
 			break;										
@@ -183,7 +182,6 @@ int send_frame(){ //When 11 recessive are received, start sending. |\label{line:
 		 return 2;	//2: Did not receive Ack
 	 }
   }
-  
   return 0; //0: Executed succesfully
 }
  
@@ -257,7 +255,7 @@ void detectEOF(){			//|\label{line:detectEOF}|
 
 void detectSOF(){ 					//|\label{line:detectSOF}|
 	can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);	
-	while(RxSymbol==1){//wait for SOF (i==1)
+	while(RxSymbol==1){   //wait for SOF (i==1)
 		can_phy_rx_symbol_blocking(can_port_id,&RxSymbol);
 	}
 	stuffedBit = 1;
